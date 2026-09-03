@@ -1,0 +1,228 @@
+/* VITA Luxury Realty - Master Luxury Stylesheet (Midnight Navy & Gold Foil Theme) */
+
+/* Atmospheric backgrounds with darker luxury navy & gradients */
+.bg-deep-navy {
+  background-color: #01040A;
+}
+
+.bg-radial-navy {
+  background: radial-gradient(circle at 50% 20%, #0A1C36 0%, #040D1B 55%, #01040A 100%);
+}
+
+.bg-gradient-navy {
+  background: linear-gradient(180deg, #051224 0%, #01040A 100%);
+}
+
+/* Sections with dark luxury backgrounds */
+.luxury-section {
+  position: relative;
+  padding: 8rem max(6vw, 1.5rem);
+  background: linear-gradient(180deg, #01040A 0%, #040E1E 50%, #01040A 100%);
+  color: #f8fafc;
+  overflow: hidden;
+}
+
+.luxury-section-alt {
+  position: relative;
+  padding: 8rem max(6vw, 1.5rem);
+  background: linear-gradient(180deg, #01040A 0%, #061427 50%, #01040A 100%);
+  color: #f8fafc;
+  overflow: hidden;
+  border-top: 1px solid rgba(212, 175, 55, 0.14);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.14);
+}
+
+.section-container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/* Section Header Typography */
+.section-header {
+  margin-bottom: 4.5rem;
+}
+
+.section-header h2 {
+  font-family: 'Bodoni Moda', serif;
+  font-size: clamp(2.6rem, 5.5vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  margin-top: 1rem;
+}
+
+.section-header h2 em,
+.section-header h2 i {
+  font-style: italic;
+  background: linear-gradient(120deg, #d4af37, #fff0a8, #c89824);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Hero Base Layout */
+.hero-wrapper {
+  position: relative;
+  min-height: 94vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #01040A;
+  padding-top: 5.5rem;
+}
+
+.hero-ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-ambient-orb-gold {
+  width: 32rem;
+  height: 32rem;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.18) 0%, transparent 70%);
+}
+
+.hero-ambient-orb-navy {
+  width: 45rem;
+  height: 45rem;
+  background: radial-gradient(circle, rgba(14, 38, 74, 0.45) 0%, transparent 70%);
+}
+
+/* Rotating Tagline Shimmer */
+.rotating-word-container {
+  display: inline-block;
+  min-width: 280px;
+  text-align: left;
+}
+
+/* Image Hover Zoom Effects */
+.img-luxury-hover {
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
+}
+
+.img-luxury-card:hover .img-luxury-hover {
+  transform: scale(1.06);
+  filter: brightness(1.06);
+}
+
+/* Gold Badge */
+.gold-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #fff1b8;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  backdrop-filter: blur(10px);
+}
+
+/* Animated Scroll Mouse */
+.scroll-mouse {
+  width: 22px;
+  height: 38px;
+  border: 1.5px solid rgba(212, 175, 55, 0.5);
+  border-radius: 12px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+}
+
+.scroll-mouse-wheel {
+  width: 3px;
+  height: 7px;
+  background: #d4af37;
+  border-radius: 2px;
+  animation: scrollWheel 2s infinite ease-in-out;
+}
+
+@keyframes scrollWheel {
+  0% { transform: translateY(0); opacity: 1; }
+  80% { transform: translateY(12px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+
+/* Floating card parallax tilt with darker navy gradient */
+.floating-glass-stat {
+  background: linear-gradient(135deg, rgba(8, 22, 44, 0.9) 0%, rgba(2, 6, 14, 0.96) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.7), 0 0 25px rgba(212, 175, 55, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+/* Interactive Calculator Sliders */
+input[type="range"].luxury-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: rgba(212, 175, 55, 0.25);
+  border-radius: 2px;
+  outline: none;
+  transition: background 0.3s;
+}
+
+input[type="range"].luxury-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #d4af37;
+  border: 2px solid #fff0a8;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.8);
+  transition: transform 0.2s ease;
+}
+
+input[type="range"].luxury-range::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+
+/* Form inputs */
+.luxury-input {
+  width: 100%;
+  background: rgba(3, 10, 22, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  padding: 0.95rem 1.25rem;
+  color: #f8fafc;
+  font-size: 0.85rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.luxury-input:focus {
+  border-color: #d4af37;
+  background: rgba(6, 18, 38, 0.95);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+}
+
+.luxury-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* Grid animations */
+@media (max-width: 1024px) {
+  .luxury-section {
+    padding: 6rem max(5vw, 1.25rem);
+  }
+  .section-header {
+    margin-bottom: 3.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .luxury-section {
+    padding: 4.5rem 1.25rem;
+  }
+  .section-header {
+    margin-bottom: 2.5rem;
+  }
+}
