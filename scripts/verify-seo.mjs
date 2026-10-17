@@ -1,0 +1,37 @@
+import assert from 'node:assert/strict';
+import { readFile, access } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+const { pages, canonicalUrl } = await import(pathToFileURL(resolve('node_modules/.tmp/seo/entry-server.js')).href);
+const titles = new Set();
+for (const path of [...Object.keys(pages), '/404']) {
+  const file = path === '/404' ? 'dist/404.html' : 'dist' + (path === '/' ? '' : path) + '/index.html';
+  const html = await readFile(file, 'utf8');
+  for (const pattern of [/<title>/g, /<meta name="description"/g, /<link rel="canonical"/g, /<meta property="og:url"/g, /<h1[ >]/g, /id="seo-schema"/g]) assert.equal([...html.matchAll(pattern)].length, 1, file + ': ' + pattern);
+  const title = html.match(/<title>(.*?)<\/title>/)[1];
+  assert(!titles.has(title), 'Duplicate title: ' + title); titles.add(title);
+  assert(html.includes('href="' + canonicalUrl(path) + '"'), 'Wrong canonical: ' + path);
+  assert(html.includes('content="' + canonicalUrl(path) + '"'), 'Wrong og:url: ' + path);
+  assert(html.includes('<main'), 'Missing pre-rendered content: ' + path);
+  assert(html.includes(path === '/404' ? 'noindex, follow' : 'index, follow, max-image-preview:large'));
+  const schema = JSON.parse(html.match(/<script id="seo-schema" type="application\/ld\+json">(.*?)<\/script>/s)[1]);
+  assert.equal(schema['@graph'].find(node => node['@type'] === 'WebPage').url, canonicalUrl(path));
+  for (const match of html.matchAll(/(?:src|href|poster)="(\/assets\/[^"?]+)[^"]*"/g)) await access('dist' + match[1]);
+  const response = await fetch('http://127.0.0.1:4173' + (path === '/404' ? '/404.html' : path));
+  assert(response.ok, 'Preview failed: ' + path);
+  assert((await response.text()).includes(title), 'Preview served incorrect page: ' + path);
+}
+const missing = await fetch('http://127.0.0.1:4173/seo-check-missing-page');
+assert.equal(missing.status, 404, 'Unknown routes must return HTTP 404');
+assert((await missing.text()).includes('noindex, follow'));
+const listing = await fetch('http://127.0.0.1:4173/properties/seo-check-dynamic-listing');
+assert.equal(listing.status, 200);
+assert(!(await listing.text()).includes('rel="canonical"'), 'Dynamic shell must not canonicalize to home');
+const sitemap = await readFile('dist/sitemap.xml', 'utf8');
+assert.equal([...sitemap.matchAll(/<loc>/g)].length, Object.keys(pages).length);
+assert(!sitemap.includes('/404'));
+const shell = await readFile('dist/app.html', 'utf8');
+assert(!shell.includes('rel="canonical"'));
+assert(shell.includes('<div id="root"></div>'));
+assert(!(await readFile('dist/index.html','utf8')).includes('19699162-uhd'));
+console.log('PASS: 10 rendered pages; unique metadata, canonical/OG URLs, H1, JSON-LD, local assets, HTTP routes, sitemap, dynamic shell and mobile video default.');

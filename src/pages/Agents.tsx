@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, ShieldCheck, Globe } from 'lucide-react';
+import { Mail, MessageSquare, Phone, ShieldCheck, Globe, X, LoaderCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PageHero from '../components/layout/PageHero';
+import { apiRequest } from '../lib/api';
+import { useLanguage } from '../context/LanguageContext';
 
 interface Advisor {
   id: string;
@@ -17,83 +19,124 @@ interface Advisor {
   bio: string;
 }
 
-const advisors: Advisor[] = [
-  {
-    id: 'julian-vance',
-    name: 'Julian Vance-Moretti',
-    role: 'Managing Partner & Founder',
-    specialty: 'Star Island & Palm Beach Compounds',
-    volume: '$780M+ Career Volume',
-    languages: ['English', 'Italian', 'French'],
-    img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=85',
-    phone: '+1 (305) 555-8482',
-    email: 'julian@vitaluxuryrealty.com',
-    bio: 'Over 18 years negotiating the most confidential landmark acquisitions in Star Island, Indian Creek, and Palm Beach with discreet global family offices.',
-  },
-  {
-    id: 'elena-rostova',
-    name: 'Elena Rostova',
-    role: 'Senior Vice President · Waterfront Assets',
-    specialty: 'Miami Beach Mega-Yacht Estates',
-    volume: '$540M+ Career Volume',
-    languages: ['English', 'Russian', 'German'],
-    img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=85',
-    phone: '+1 (305) 555-8483',
-    email: 'elena@vitaluxuryrealty.com',
-    bio: 'Renowned authority on Biscayne Bay deep-water navigability and architectural waterfront modernism, serving sovereign wealth funds and European industrialists.',
-  },
-  {
-    id: 'marcus-sterling',
-    name: 'Marcus Sterling',
-    role: 'Managing Director · Penthouse Division',
-    specialty: 'Brickell & Sunny Isles Penthouses',
-    volume: '$420M+ Career Volume',
-    languages: ['English', 'Spanish', 'Portuguese'],
-    img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85',
-    phone: '+1 (305) 555-8484',
-    email: 'marcus@vitaluxuryrealty.com',
-    bio: 'Specializing in trophy sky mansions and pre-construction architectural developments with direct relationships to leading international developers.',
-  },
-  {
-    id: 'sophia-delacroix',
-    name: 'Sophia Delacroix',
-    role: 'Director · Historic & Gated Enclaves',
-    specialty: 'Coral Gables & Coconut Grove Estates',
-    volume: '$390M+ Career Volume',
-    languages: ['English', 'French', 'Spanish'],
-    img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=800&q=85',
-    phone: '+1 (305) 555-8485',
-    email: 'sophia@vitaluxuryrealty.com',
-    bio: 'Expert in Florida historic preservation, coral-stone estates, and gated enclave privacy architecture, representing second-generation family estates.',
-  },
-];
+function phoneNumber(phone: string) {
+  return phone.replace(/[^+0-9]/g, '');
+}
 
-export default function Agents() {
-  const [selectedSpecialty, setSelectedSpecialty] = useState('All');
+function AgentContactButtons({ advisor, spanish }: { advisor: Advisor; spanish: boolean }) {
+  const number = phoneNumber(advisor.phone);
+  if (!/\d/.test(number)) {
+    return <p className="text-xs text-white/50">{spanish ? 'Telefono no disponible' : 'Phone unavailable'}</p>;
+  }
+  return (
+    <div className="relative z-20 grid grid-cols-2 gap-2 pt-1">
+      <a href={`tel:${number}`} aria-label={`${spanish ? 'Llamar a' : 'Call'} ${advisor.name}`} className="luxury-btn-outline !py-2 !px-2 !text-[9px] flex items-center justify-center gap-1.5">
+        <Phone size={12} className="text-[#B8892F]" />
+        <span>{spanish ? 'LLAMAR' : 'CALL'}</span>
+      </a>
+      <a href={`sms:${number}`} aria-label={`${spanish ? 'Enviar SMS a' : 'Text'} ${advisor.name}`} className="luxury-btn-primary !py-2 !px-2 !text-[9px] flex items-center justify-center gap-1.5">
+        <MessageSquare size={12} />
+        <span>{spanish ? 'MENSAJE' : 'MESSAGE'}</span>
+      </a>
+    </div>
+  );
+}
+
+function AdvisorModal({ advisor, spanish, onClose }: { advisor: Advisor; spanish: boolean; onClose: () => void }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
-    document.title = 'Private Advisors | VITA Luxury Realty';
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const previousFocus = document.activeElement;
+    const overflow = document.body.style.overflow;
+    dialog.showModal();
+    document.body.style.overflow = 'hidden';
+    return () => {
+      dialog.close();
+      document.body.style.overflow = overflow;
+      if (previousFocus instanceof HTMLElement) previousFocus.focus();
+    };
   }, []);
 
-  const filteredAdvisors = advisors.filter((adv) => {
+  return (
+    <dialog ref={dialogRef} aria-labelledby="advisor-modal-title" onCancel={onClose} onClick={(event) => {
+      if (event.target === event.currentTarget) onClose();
+    }} className="m-auto w-[calc(100%-2rem)] max-w-4xl max-h-[90dvh] overflow-y-auto overscroll-contain rounded-sm border border-[#B8892F]/40 bg-[#0C1730] p-0 text-white shadow-2xl backdrop:bg-black/75 backdrop:backdrop-blur-sm" data-lenis-prevent>
+      <div className="relative p-6 sm:p-8">
+        <button type="button" autoFocus onClick={onClose} aria-label={spanish ? 'Cerrar detalles' : 'Close details'} className="absolute right-3 top-3 z-10 rounded-full bg-[#132C52] p-2 text-white hover:bg-[#B8892F] focus-visible:outline-2 focus-visible:outline-[#B8892F]">
+          <X size={20} />
+        </button>
+        <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]">
+          <img src={advisor.img} alt={advisor.name} className="w-full max-h-[55dvh] rounded-sm object-contain bg-[#0F2244]" />
+          <div className="min-w-0 space-y-4 md:pr-5">
+            <p className="text-xs tracking-widest uppercase text-[#B8892F]">{advisor.role}</p>
+            <h2 id="advisor-modal-title" className="display text-3xl sm:text-4xl">{advisor.name}</h2>
+            <p className="text-sm text-[#f0dda6]">{advisor.specialty}</p>
+            <p className="text-xs tracking-wider text-[#B8892F]">{advisor.volume}</p>
+            <p className="whitespace-pre-line break-words text-sm leading-relaxed text-white/75">{advisor.bio}</p>
+            <p className="flex items-center gap-2 text-xs text-white/60"><Globe size={14} />{advisor.languages.join(' / ')}</p>
+            {advisor.phone && <p className="text-sm text-white/80">{advisor.phone}</p>}
+            {advisor.email && <a href={`mailto:${advisor.email}`} className="flex items-center gap-2 text-sm text-[#f0dda6] break-all"><Mail size={14} className="shrink-0" />{advisor.email}</a>}
+            <AgentContactButtons advisor={advisor} spanish={spanish} />
+          </div>
+        </div>
+      </div>
+    </dialog>
+  );
+}
+
+export default function Agents() {
+  const { t, language } = useLanguage();
+  const [selectedSpecialty, setSelectedSpecialty] = useState('All');
+  const [selectedAdvisor, setSelectedAdvisor] = useState<Advisor | null>(null);
+  const [remoteAdvisors, setRemoteAdvisors] = useState<Advisor[]>([]);
+  const [loadStatus, setLoadStatus] = useState<'loading' | 'success' | 'error'>('loading');
+
+  useEffect(() => {
+    const controller = new AbortController();
+    apiRequest<{ data: Array<{ id: number; name: string; title: string | null; bio: string | null; contact?: { email: string | null; phone: string | null; whatsapp: string | null } | null; photo_url: string | null }> }>('/real-estate-agents', { signal: controller.signal })
+      .then(({ data }) => {
+        if (controller.signal.aborted) return;
+        setRemoteAdvisors(data.map((agent) => ({
+        id: String(agent.id),
+        name: agent.name,
+        role: agent.title || 'Real Estate Advisor',
+        specialty: 'Tampa Bay Private Advisory',
+        volume: 'VITA ADVISORY COUNCIL',
+        languages: ['English', 'Spanish'],
+        img: agent.photo_url || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=85',
+        phone: agent.contact?.phone || agent.contact?.whatsapp || '',
+        email: agent.contact?.email || '',
+        bio: agent.bio || 'Private real estate representation across Tampa Bay.',
+      })));
+        setLoadStatus('success');
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setLoadStatus('error');
+      });
+    return () => controller.abort();
+  }, []);
+
+  const filteredAdvisors = remoteAdvisors.filter((adv) => {
     if (selectedSpecialty === 'All') return true;
     return adv.specialty.toLowerCase().includes(selectedSpecialty.toLowerCase());
   });
 
   return (
-    <main className="bg-[#040B16] text-white">
+    <main className="bg-[#0C1730] text-white">
       {/* 1. Page Hero with Rotating Titles & Scroll Reaction */}
       <PageHero
-        eyebrow="PRIVATE CLIENT ADVISORY"
+        eyebrow={t('agentsEyebrow')}
         titlePrefix="MEET OUR"
         rotatingWords={[
-          'TRUSTED CONFIDANTS',
-          'MASTER NEGOTIATORS',
-          'TOP FLORIDA PRODUCERS',
-          'PRIVATE FIDUCIARIES',
+          'Tampa Bay Brokers',
+          'Buyer Representatives',
+          'Listing Specialists',
+          'Property Advisors',
         ]}
         titleSuffix="AT VITA"
-        description="Our advisors possess deep market intelligence, unmatched discretion, and direct personal access to the world’s most private real estate transactions."
+        description={t('agentsHeroDesc')}
         backgroundImage="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1800&q=85"
         badgeText="VITA ADVISORY COUNCIL"
         statCard={{
@@ -101,33 +144,41 @@ export default function Agents() {
           value: '$2.13B+',
           sub: 'Florida Career Production',
         }}
-        ctaText="REQUEST PRIVATE INTRODUCTION"
+        ctaText={t('agentsCtaBtn')}
         ctaLink="/contact"
         ctaSecondaryText="VIEW EXCLUSIVE PORTFOLIO"
         ctaSecondaryLink="/properties"
+        coordinates="EXPERTISE THAT MOVES YOU"
       />
+
+      <section className="luxury-section pt-0">
+        <div className="section-container flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-y border-[#B8892F]/20 py-8">
+          <div><span className="eyebrow">YOUR NEXT CHAPTER</span><h2 className="display text-3xl">Bring your perspective to <i>VITA.</i></h2></div>
+          <Link to="/join-team" className="luxury-btn-primary shrink-0">JOIN THE TEAM <span aria-hidden="true">↗</span></Link>
+        </div>
+      </section>
 
       {/* 2. Advisors Catalog */}
       <section className="luxury-section">
         <div className="section-container">
           <div className="section-header flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <span className="eyebrow">THE ADVISORY BOARD</span>
+              <span className="eyebrow">{t('agentsListEyebrow')}</span>
               <h2 className="display">
-                Principals of <i>Integrity.</i>
+                {t('agentsListH2')}
               </h2>
             </div>
 
             {/* Filter */}
             <div className="flex flex-wrap items-center gap-2">
-              {['All', 'Palm Beach', 'Waterfront', 'Penthouse', 'Coral Gables'].map((spec) => (
+              {['All', 'Tampa Bay', 'Waterfront', 'South Tampa', 'Clearwater'].map((spec) => (
                 <button
                   key={spec}
                   onClick={() => setSelectedSpecialty(spec)}
                   className={`text-[10px] font-semibold tracking-wider px-3.5 py-1.5 rounded-sm transition-all ${
                     selectedSpecialty === spec
-                      ? 'bg-[#D4AF37] text-[#040B16] font-bold shadow-[0_0_15px_rgba(212,175,55,0.4)]'
-                      : 'bg-[#071936] text-white/70 hover:text-white border border-white/10'
+                      ? 'bg-[#B8892F] text-[#0C1730] font-bold shadow-[0_0_15px_rgba(184,137,47,0.4)]'
+                      : 'bg-[#132C52] text-white/70 hover:text-white border border-white/10'
                   }`}
                 >
                   {spec.toUpperCase()}
@@ -137,6 +188,29 @@ export default function Agents() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {loadStatus === 'loading' && (
+              <div role="status" className="col-span-full flex min-h-64 items-center justify-center gap-3 text-white/70">
+                <LoaderCircle aria-hidden="true" size={22} className="animate-spin motion-reduce:animate-none text-[#B8892F]" />
+                <span>{language === 'es' ? 'Cargando agentes...' : 'Loading advisors...'}</span>
+              </div>
+            )}
+            {loadStatus === 'error' && (
+              <p role="alert" className="col-span-full py-12 text-center text-white/70">
+                {language === 'es' ? 'No se pudieron cargar los agentes. Intenta recargar la pagina.' : 'Unable to load advisors. Please try refreshing the page.'}
+              </p>
+            )}
+            {loadStatus === 'success' && filteredAdvisors.length === 0 && (
+              <div role="status" className="col-span-full text-center py-12 space-y-4">
+                <p className="text-white/70">
+                  {remoteAdvisors.length === 0
+                    ? (language === 'es' ? 'No hay agentes disponibles en este momento.' : 'No advisors are available at the moment.')
+                    : (language === 'es' ? 'No hay agentes para esta especialidad.' : 'No advisors match this specialty.')}
+                </p>
+                {remoteAdvisors.length > 0 && <button onClick={() => setSelectedSpecialty('All')} className="luxury-btn-outline">
+                  {language === 'es' ? 'VER TODOS LOS AGENTES' : 'VIEW ALL ADVISORS'}
+                </button>}
+              </div>
+            )}
             {filteredAdvisors.map((adv, idx) => (
               <motion.article
                 key={adv.id}
@@ -144,17 +218,24 @@ export default function Agents() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1, duration: 0.7 }}
-                className="group gold-glass-card rounded-sm overflow-hidden flex flex-col justify-between"
+                className="relative group gold-glass-card rounded-sm overflow-hidden flex flex-col justify-between"
               >
+                <button
+                  type="button"
+                  onClick={() => setSelectedAdvisor(adv)}
+                  aria-label={`${t('agentViewProfile')}: ${adv.name}`}
+                  aria-haspopup="dialog"
+                  className="absolute inset-0 z-10 cursor-pointer rounded-sm focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#B8892F]"
+                />
                 {/* Advisor Photo */}
-                <div className="relative aspect-[3/4] overflow-hidden bg-[#061730]">
+                <div className="relative aspect-[3/4] overflow-hidden bg-[#0F2244]">
                   <img
                     src={adv.img}
                     alt={adv.name}
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 filter contrast-[1.05]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#040B16] via-transparent to-transparent opacity-80" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0C1730] via-transparent to-transparent opacity-80" />
                   <span className="absolute top-4 left-4 gold-badge text-[8px]">
                     {adv.volume}
                   </span>
@@ -163,42 +244,28 @@ export default function Agents() {
                 {/* Info */}
                 <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
                   <div>
-                    <span className="text-[10px] tracking-[0.22em] font-bold text-[#D4AF37] uppercase block">
+                    <span className="text-[10px] tracking-[0.22em] font-bold text-[#B8892F] uppercase block">
                       {adv.role}
                     </span>
                     <h3 className="display text-2xl text-white font-normal mt-1">
                       {adv.name}
                     </h3>
-                    <p className="text-xs text-[#fff1b8]/80 font-medium mt-1">
+                    <p className="text-xs text-[#f0dda6]/80 font-medium mt-1">
                       {adv.specialty}
                     </p>
-                    <p className="text-xs text-white/60 font-light mt-3 leading-relaxed">
-                      {adv.bio}
+                    <p className="text-xs text-white/60 font-light mt-3 leading-relaxed line-clamp-3">
+                      {adv.bio.length > 160 ? adv.bio.slice(0, 157).replace(/\s+\S*$/, '') + '...' : adv.bio}
                     </p>
+                    <span className="mt-3 inline-block text-[10px] font-semibold tracking-wider text-[#B8892F] group-hover:underline">{t('agentViewProfile')} &rarr;</span>
                   </div>
 
-                  <div className="pt-4 border-t border-[#D4AF37]/20 space-y-3">
+                  <div className="pt-4 border-t border-[#B8892F]/20 space-y-3">
                     <div className="flex items-center gap-2 text-[10px] text-white/50">
-                      <Globe size={13} className="text-[#D4AF37]" />
+                      <Globe size={13} className="text-[#B8892F]" />
                       <span>{adv.languages.join(' · ')}</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 pt-1">
-                      <a
-                        href={`tel:${adv.phone}`}
-                        className="luxury-btn-outline !py-2 !px-2 !text-[9px] flex items-center justify-center gap-1.5"
-                      >
-                        <Phone size={12} className="text-[#D4AF37]" />
-                        <span>CALL</span>
-                      </a>
-                      <Link
-                        to={`/contact?advisor=${encodeURIComponent(adv.name)}`}
-                        className="luxury-btn-primary !py-2 !px-2 !text-[9px] flex items-center justify-center gap-1.5"
-                      >
-                        <Mail size={12} />
-                        <span>MESSAGE</span>
-                      </Link>
-                    </div>
+                    <AgentContactButtons advisor={adv} spanish={language === 'es'} />
                   </div>
                 </div>
               </motion.article>
@@ -207,10 +274,14 @@ export default function Agents() {
         </div>
       </section>
 
+      {selectedAdvisor && (
+        <AdvisorModal advisor={selectedAdvisor} spanish={language === 'es'} onClose={() => setSelectedAdvisor(null)} />
+      )}
+
       {/* 3. Fiduciary Charter Strip */}
       <section className="luxury-section-alt">
         <div className="section-container max-w-4xl text-center space-y-6">
-          <ShieldCheck size={36} className="text-[#D4AF37] mx-auto" />
+          <ShieldCheck size={36} className="text-[#B8892F] mx-auto" />
           <h2 className="display text-3xl sm:text-4xl text-white font-normal">
             The VITA Fiduciary Charter
           </h2>

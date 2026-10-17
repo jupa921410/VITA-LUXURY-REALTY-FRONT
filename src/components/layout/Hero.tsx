@@ -1,28 +1,44 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, ShieldCheck, Sparkles, Award, Star } from 'lucide-react';
+import { ArrowRight, Sparkles, Star, Compass } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import heroImg from '@/assets/hero.jpg';
+import heroImg from '@/assets/hero_new.jpg';
 import brokerImg from '@/assets/broker.jpg';
 
 export default function Hero() {
   return (
-    <section className="relative min-h-[92vh] lg:min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#01040A] via-[#040D1B] to-[#01040A] pt-28 pb-20 selection:bg-[#D4AF37] selection:text-[#01040A]">
+    <section className="relative min-h-[94vh] lg:min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#060912] via-[#0D1A34] to-[#060912] pt-28 pb-20 selection:bg-[#B8892F] selection:text-[#060912]">
       {/* Background Image with Dark Contrast */}
       <div className="absolute inset-0 z-0 origin-center pointer-events-none">
         <img
           src={heroImg}
           alt="VITA Luxury Estate Florida"
-          className="w-full h-full object-cover filter brightness-[0.25] contrast-[1.18] saturate-[0.8]"
+          className="w-full h-full object-cover filter brightness-[0.42] contrast-[1.2] saturate-[0.9]"
         />
       </div>
 
-      {/* Deep Navy Dark Overlays & Gradients */}
-      <div className="absolute inset-0 z-1 bg-gradient-to-t from-[#01040A] via-[#020712]/80 to-[#01040A]/95 pointer-events-none" />
-      <div className="absolute inset-0 z-1 bg-gradient-to-r from-[#01040A] via-[#051428]/60 to-[#01040A]/95 pointer-events-none" />
+      {/* Cinematic Vignette & Deep Dark Overlays */}
+      <div className="absolute inset-0 z-1 cinematic-vignette pointer-events-none" />
+      <div className="absolute inset-0 z-1 bg-gradient-to-t from-[#060912]/70 via-[#0A1226]/50 to-[#060912]/60 pointer-events-none" />
+      <div className="absolute inset-0 z-1 bg-gradient-to-r from-[#060912]/64 via-[#0A1830]/38 to-[#060912]/64 pointer-events-none" />
+      <div className="absolute inset-0 z-1 arch-grid-bg opacity-30 pointer-events-none" />
 
       {/* Ambient Lighting Orbs */}
-      <div className="absolute top-1/4 -left-28 w-[600px] h-[600px] rounded-full bg-[#081F3E]/40 blur-[150px] pointer-events-none z-1" />
-      <div className="absolute top-1/3 right-10 w-[550px] h-[550px] rounded-full bg-[#0B254A]/35 blur-[160px] pointer-events-none z-1" />
+      <div className="absolute top-1/4 -left-28 w-[600px] h-[600px] rounded-full bg-[#12356A]/45 blur-[150px] pointer-events-none z-1" />
+      <div className="absolute top-1/3 right-10 w-[550px] h-[550px] rounded-full bg-[#15305C]/38 blur-[160px] pointer-events-none z-1" />
+      <div className="absolute bottom-10 left-1/3 w-[500px] h-[500px] rounded-full bg-[#B8892F]/12 blur-[140px] pointer-events-none z-1" />
+
+      {/* Vertical editorial coordinate tag, left edge */}
+      <div className="hidden xl:flex absolute left-6 top-1/2 -translate-y-1/2 z-10 flex-col items-center gap-4 pointer-events-none">
+        <span className="w-px h-16 bg-gradient-to-b from-transparent to-[#B8892F]/50" />
+        <span
+          className="font-accent text-[9px] tracking-[0.35em] text-[#B8892F]/70 whitespace-nowrap"
+          style={{ writingMode: 'vertical-rl' }}
+        >
+          LIVE THE VITA DIFFERENCE
+        </span>
+        <Compass size={13} className="text-[#B8892F]/60" />
+        <span className="w-px h-16 bg-gradient-to-t from-transparent to-[#B8892F]/50" />
+      </div>
 
       {/* Hero Grid Container */}
       <div className="relative z-10 max-w-[1480px] w-full mx-auto px-6 lg:px-12 py-6">
@@ -31,58 +47,57 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: 'easeOut' }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-7 flex flex-col items-start text-left"
           >
             {/* Eyebrow Badge */}
-            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-[#D4AF37]/45 bg-[#030A17]/85 backdrop-blur-md mb-6 shadow-[0_0_25px_rgba(212,175,55,0.15)]">
-              <Sparkles size={14} className="text-[#D4AF37]" />
-              <span className="text-[10px] font-bold tracking-[0.28em] text-[#fff1b8] uppercase">
-                FLORIDA PRIVATE ADVISORY
-              </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
-              <span className="text-[9px] tracking-[0.22em] text-white/70 uppercase">
-                ESTABLISHED 2011
-              </span>
+            <div className="gold-badge mb-7 bg-[#0A1226]/85 shadow-[0_0_30px_rgba(184,137,47,0.18)]">
+              <Sparkles size={13} className="text-[#B8892F]" />
+              <span>FLORIDA PRIVATE ADVISORY</span>
+              <span className="w-1 h-1 bg-[#B8892F] rotate-45" />
+              <span className="text-white/60">ESTABLISHED 2011</span>
             </div>
 
-            <h1 className="display text-4xl sm:text-6xl md:text-7xl lg:text-[4.4rem] xl:text-[5.4rem] font-normal text-white tracking-tight leading-[1.03] max-w-4xl">
-              <span className="block text-white/95 text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-2 font-light">
-                DISCOVER &amp;
+            <h1 className="display text-4xl sm:text-6xl md:text-7xl lg:text-[4.6rem] xl:text-[5.6rem] font-normal text-white tracking-tight leading-[1.02] max-w-4xl">
+              <span className="block text-white/95 text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-2 font-light not-italic">
+                Discover &amp;
               </span>
-              <span className="text-gold-gradient font-normal italic drop-shadow-[0_4px_30px_rgba(212,175,55,0.35)]">
-                LIVE THE VITA
+              <span className="text-gold-gradient font-script text-[1.4em]">
+                Live the VITA
               </span>
             </h1>
 
-            <div className="w-32 my-6 gold-rule" />
+            <div className="w-36 my-6 gold-rule" />
 
             <p className="text-white/80 text-base sm:text-lg max-w-xl font-light leading-relaxed mb-7">
               Representing Florida’s most extraordinary private residences, architectural icons, and off-market sanctuaries with unyielding discretion.
             </p>
 
             {/* Trust Metrics Bar */}
-            <div className="grid grid-cols-3 gap-4 sm:gap-6 py-4 mb-8 border-y border-[#D4AF37]/20 w-full max-w-xl">
-              <div>
-                <strong className="display text-2xl sm:text-3xl text-[#fff1b8] font-normal block">$2.4B+</strong>
-                <span className="text-[10px] tracking-wider text-white/60 uppercase block mt-0.5">Transacted Volume</span>
-              </div>
-              <div>
-                <strong className="display text-2xl sm:text-3xl text-[#fff1b8] font-normal block">99.4%</strong>
-                <span className="text-[10px] tracking-wider text-white/60 uppercase block mt-0.5">Client Retention</span>
-              </div>
-              <div>
-                <strong className="display text-2xl sm:text-3xl text-[#fff1b8] font-normal block">Top 0.1%</strong>
-                <span className="text-[10px] tracking-wider text-white/60 uppercase block mt-0.5">Florida Advisory</span>
-              </div>
+            <div className="grid grid-cols-3 gap-4 sm:gap-6 py-4 mb-8 border-y border-[#B8892F]/20 w-full max-w-xl">
+              {[
+                { v: '$2.4B+', l: 'Transacted Volume' },
+                { v: '99.4%', l: 'Client Retention' },
+                { v: 'Top 0.1%', l: 'Florida Advisory' },
+              ].map((stat, i) => (
+                <motion.div
+                  key={stat.l}
+                  initial={{ opacity: 0, scale: 0.85 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 0.5 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <strong className="display italic text-2xl sm:text-3xl text-[#f0dda6] font-normal block">{stat.v}</strong>
+                  <span className="font-accent text-[8.5px] tracking-[0.18em] text-white/60 uppercase block mt-1">{stat.l}</span>
+                </motion.div>
+              ))}
             </div>
 
             <div className="flex flex-wrap items-center gap-4">
-              <Link to="/properties" className="luxury-btn-primary">
+              <Link to="/properties" className="luxury-btn-primary group">
                 <span>EXPLORE THE COLLECTION</span>
-                <ArrowRight size={15} />
+                <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
-              <Link to="/contact" className="luxury-btn-outline">
+              <Link to="/contact" className="luxury-btn-outline group">
                 <span>CONFIDENTIAL CONSULTATION</span>
               </Link>
             </div>
@@ -97,80 +112,45 @@ export default function Hero() {
               className="relative w-full max-w-[430px] lg:max-w-[460px] group"
             >
               {/* Ambient Halo Glow */}
-              <div className="absolute -inset-3 bg-gradient-to-tr from-[#D4AF37]/20 via-[#0A264F]/50 to-[#D4AF37]/15 rounded-sm blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+              <div className="absolute -inset-4 bg-gradient-to-tr from-[#B8892F]/25 via-[#16335E]/50 to-[#B8892F]/20 rounded-sm blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
-              {/* Frame Container */}
-              <div className="relative rounded-sm overflow-hidden border border-[#D4AF37]/50 bg-gradient-to-b from-[#06152B] via-[#030B17] to-[#01040A] shadow-[0_30px_90px_rgba(0,0,0,0.92)] transition-transform duration-700 group-hover:-translate-y-1.5">
-                {/* Gold Corner Accents */}
-                <div className="absolute top-2.5 left-2.5 w-4 h-4 border-t-2 border-l-2 border-[#D4AF37] pointer-events-none z-20" />
-                <div className="absolute top-2.5 right-2.5 w-4 h-4 border-t-2 border-r-2 border-[#D4AF37] pointer-events-none z-20" />
-                <div className="absolute bottom-2.5 left-2.5 w-4 h-4 border-b-2 border-l-2 border-[#D4AF37] pointer-events-none z-20" />
-                <div className="absolute bottom-2.5 right-2.5 w-4 h-4 border-b-2 border-r-2 border-[#D4AF37] pointer-events-none z-20" />
-
-                {/* Top Floating Badge */}
-                <div className="absolute top-4 left-4 z-20 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#D4AF37]/60 bg-[#020712]/85 backdrop-blur-md shadow-lg">
-                  <ShieldCheck size={13} className="text-[#D4AF37]" />
-                  <span className="text-[9px] font-bold tracking-[0.24em] text-[#fff1b8] uppercase">
-                    MANAGING BROKER &amp; FOUNDER
-                  </span>
+              <div className="relative min-h-[570px] sm:min-h-[650px] overflow-visible transition-transform duration-700 group-hover:-translate-y-1.5">
+                <div className="absolute top-8 right-0 w-[84%] h-[62%] overflow-hidden border border-[#B8892F]/55 bg-[#0A1226]/70 shadow-[0_28px_70px_rgba(0,0,0,0.7)] rotate-3 transition-transform duration-700 group-hover:rotate-1">
+                  <img src={heroImg} alt="Luxury Florida estate" className="w-full h-full object-cover brightness-[0.72] contrast-[1.08] saturate-[0.95]" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#060912]/68 via-[#060912]/18 to-[#0A1226]/12" />
+                  <span className="absolute bottom-4 left-4 font-accent text-[9px] tracking-[0.25em] text-[#F0DDA6] uppercase">Private waterfront collection</span>
                 </div>
-
-                {/* Broker Portrait Photo */}
-                <div className="relative aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] xl:aspect-[4/5] overflow-hidden">
-                  <img
-                    src={brokerImg}
-                    alt="Elena Rostova - Managing Broker & Founder of VITA Luxury Realty"
-                    className="w-full h-full object-cover object-top transition-transform duration-1000 group-hover:scale-105 filter contrast-[1.05] brightness-[0.97]"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#01040A] via-[#020712]/30 to-transparent pointer-events-none" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#01040A]/35 via-transparent to-[#01040A]/30 pointer-events-none" />
-                </div>
-
-                {/* Broker Credentials Bar */}
-                <div className="relative z-20 p-5 sm:p-6 bg-gradient-to-b from-[#051326]/95 via-[#020712]/98 to-[#01040A] border-t border-[#D4AF37]/35">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <span className="eyebrow block mb-1">PRINCIPAL ADVISOR</span>
-                      <h3 className="display text-2xl sm:text-3xl text-white font-normal group-hover:text-[#fff1b8] transition-colors">
-                        Elena Rostova
-                      </h3>
-                      <p className="text-xs text-[#D4AF37] font-medium tracking-wider mt-0.5">
-                        Licensed Real Estate Broker · Managing Partner
-                      </p>
-                    </div>
-                    <div className="w-10 h-10 rounded-full bg-[#020712] border border-[#D4AF37]/60 flex items-center justify-center text-[#D4AF37] shrink-0 shadow-[0_0_15px_rgba(212,175,55,0.25)]">
-                      <Award size={18} />
-                    </div>
-                  </div>
-
-                  <p className="text-[12px] text-white/70 font-light leading-relaxed mt-3 pt-3 border-t border-white/10">
-                    Confidential advisory for Star Island, Palm Beach, and Miami Beach trophy waterfront estates.
-                  </p>
-
-                  <div className="mt-4 pt-3 border-t border-[#D4AF37]/20 flex items-center justify-between">
-                    <Link
-                      to="/contact"
-                      className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] text-[#D4AF37] uppercase hover:text-white transition-colors"
-                    >
-                      <span>DIRECT CONSULTATION</span>
-                      <ArrowRight size={13} />
-                    </Link>
-                    <span className="text-[11px] text-white/50 tracking-wider">
-                      +1 (305) 555-8482
-                    </span>
-                  </div>
+                <div className="absolute top-5 left-0 z-20 gold-badge bg-[#0A1226]/85 shadow-lg">MANAGING BROKER &amp; FOUNDER</div>
+                <img
+                  src={brokerImg}
+                  alt="Elena Rostova - Managing Broker & Founder of VITA Luxury Realty"
+                  className="absolute inset-x-0 bottom-0 z-10 w-full h-[96%] object-contain object-bottom transition-transform duration-1000 group-hover:scale-[1.03] filter contrast-[1.05] brightness-[0.98] drop-shadow-[0_24px_28px_rgba(0,0,0,0.65)]"
+                />
+                <div className="absolute bottom-4 left-0 z-20 w-[78%] border-l border-[#B8892F] bg-[#060912]/88 px-5 py-4 shadow-[0_18px_45px_rgba(0,0,0,0.55)] backdrop-blur-sm">
+                  <span className="eyebrow block mb-1">PRINCIPAL ADVISOR</span>
+                  <h3 className="display italic text-2xl sm:text-3xl text-white font-normal group-hover:text-[#f0dda6] transition-colors">Elena Rostova</h3>
+                  <p className="font-accent text-[10px] text-[#B8892F] tracking-wider mt-1 uppercase">Licensed Broker · Managing Partner</p>
+                  <p className="text-[11px] text-white/70 font-light leading-relaxed mt-3">Confidential advisory for Florida&apos;s most exceptional waterfront estates.</p>
+                  <Link to="/contact" className="font-accent inline-flex items-center gap-2 mt-3 text-[10px] font-semibold tracking-[0.2em] text-[#B8892F] uppercase hover:text-white transition-colors group/link">
+                    <span>DIRECT CONSULTATION</span><ArrowRight size={13} className="transition-transform duration-300 group-hover/link:translate-x-1" />
+                  </Link>
                 </div>
               </div>
 
               {/* Floating Metric Pill */}
-              <div className="hidden sm:flex absolute -bottom-5 -left-5 z-30 floating-glass-stat p-4 rounded-sm border border-[#D4AF37]/60 max-w-[210px] flex-col gap-1 shadow-2xl">
-                <div className="flex items-center gap-1.5 text-[#D4AF37] text-[9px] font-bold tracking-widest uppercase">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.9 }}
+                className="hidden sm:flex absolute -bottom-6 -left-6 z-30 floating-glass-stat p-4 border border-[#B8892F]/60 max-w-[210px] flex-col gap-1 shadow-2xl"
+              >
+                <div className="font-accent flex items-center gap-1.5 text-[#B8892F] text-[9px] font-semibold tracking-[0.2em] uppercase">
                   <Star size={11} fill="currentColor" />
-                  <span>TOP 0.1% PRODUCER</span>
+                  <span>Top 0.1% Producer</span>
                 </div>
-                <strong className="display text-xl text-white font-normal">$780M+</strong>
+                <strong className="display italic text-xl text-white font-normal">$780M+</strong>
                 <span className="text-[10px] text-white/60">Career Transacted Volume</span>
-              </div>
+              </motion.div>
             </motion.div>
           </div>
         </div>

@@ -2,34 +2,132 @@
 
 /* Atmospheric backgrounds with darker luxury navy & gradients */
 .bg-deep-navy {
-  background-color: #01040A;
+  background-color: #060912;
 }
 
 .bg-radial-navy {
-  background: radial-gradient(circle at 50% 20%, #0A1C36 0%, #040D1B 55%, #01040A 100%);
+  background: radial-gradient(circle at 50% 20%, #15275C 0%, #0D1A34 55%, #060912 100%);
 }
 
 .bg-gradient-navy {
-  background: linear-gradient(180deg, #051224 0%, #01040A 100%);
+  background: linear-gradient(180deg, #0E2140 0%, #060912 100%);
 }
 
-/* Sections with dark luxury backgrounds */
+/* Sections with dark luxury backgrounds — lightened a step from
+   near-black to a brighter, clearer slate-navy so the site reads
+   less heavy while keeping full white-text contrast. */
 .luxury-section {
   position: relative;
   padding: 8rem max(6vw, 1.5rem);
-  background: linear-gradient(180deg, #01040A 0%, #040E1E 50%, #01040A 100%);
-  color: #f8fafc;
+  background: linear-gradient(180deg, #0A1428 0%, #15294E 50%, #0A1428 100%);
+  color: #f7f3ea;
   overflow: hidden;
 }
 
 .luxury-section-alt {
   position: relative;
   padding: 8rem max(6vw, 1.5rem);
-  background: linear-gradient(180deg, #01040A 0%, #061427 50%, #01040A 100%);
-  color: #f8fafc;
+  background: linear-gradient(180deg, #0A1428 0%, #1B3562 50%, #0A1428 100%);
+  color: #f7f3ea;
   overflow: hidden;
-  border-top: 1px solid rgba(212, 175, 55, 0.14);
-  border-bottom: 1px solid rgba(212, 175, 55, 0.14);
+  border-top: 1px solid rgba(184, 137, 47, 0.14);
+  border-bottom: 1px solid rgba(184, 137, 47, 0.14);
+}
+
+/* True light showcase section — clean white ground with warm-shadowed
+   gold accents and dark navy body copy. Used sparingly for standout
+   "lighter, clearer" moments rather than as the whole site's base,
+   so every hand-authored white-text block elsewhere stays untouched.
+   The fade-to-white at each edge now lives in the neighbouring dark
+   section (see ".luxury-section:has(+ .cream-section)" etc. below),
+   so this section itself hands off at pure white on both sides —
+   letting the two moods share the transition instead of one section
+   doing all the work. */
+.cream-section {
+  position: relative;
+  padding: 8rem max(6vw, 1.5rem);
+  background: #FFFFFF;
+  color: #16233D;
+  overflow: hidden;
+}
+
+/* Mirrored blend — the dark section standing next to a cream-section
+   now carries its own fade toward white at the shared edge (reversed:
+   dark → white as it approaches the seam, instead of white → dark).
+   Both sides fade toward the same meeting point, so the hand-off reads
+   as one continuous gradient rather than a sudden cut. Only the edge
+   that actually touches a cream-section is affected; every other
+   .luxury-section / .luxury-section-alt keeps its original self-
+   contained gradient. */
+.luxury-section:has(+ .cream-section) {
+  background: linear-gradient(
+    180deg,
+    #0A1428 0%,
+    #15294E 50%,
+    #0A1428 calc(100% - 120px),
+    #FFFFFF 100%
+  );
+}
+
+.luxury-section-alt:has(+ .cream-section) {
+  background: linear-gradient(
+    180deg,
+    #0A1428 0%,
+    #1B3562 50%,
+    #0A1428 calc(100% - 120px),
+    #FFFFFF 100%
+  );
+}
+
+.cream-section + .luxury-section {
+  background: linear-gradient(
+    180deg,
+    #FFFFFF 0%,
+    #0A1428 120px,
+    #15294E 50%,
+    #0A1428 100%
+  );
+}
+
+.cream-section + .luxury-section-alt {
+  background: linear-gradient(
+    180deg,
+    #FFFFFF 0%,
+    #0A1428 120px,
+    #1B3562 50%,
+    #0A1428 100%
+  );
+}
+
+.cream-section .section-header h2,
+.cream-section h1,
+.cream-section h2,
+.cream-section h3 {
+  color: #16233D;
+}
+
+/* Darker, richer gold for legibility against the light ground —
+   the pale gold used on dark navy sections washes out on cream. */
+.cream-section .eyebrow,
+.cream-section .eyebrow-dark {
+  color: #8a6a1e;
+}
+
+.cream-section .gold-rule {
+  background: linear-gradient(90deg, transparent, #8a6a1e 20%, #b8892f 50%, #8a6a1e 80%, transparent);
+}
+
+.cream-section .gold-rule::before {
+  background: #8a6a1e;
+  box-shadow: 0 0 6px rgba(138, 106, 30, 0.5);
+}
+
+.cream-card {
+  position: relative;
+  background: #FFFFFF;
+  border: 1px solid rgba(122, 90, 20, 0.18);
+  clip-path: polygon(0 22px, 22px 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%);
+  box-shadow: 0 30px 70px -20px rgba(22, 35, 61, 0.28), 0 2px 8px rgba(122, 90, 20, 0.1);
 }
 
 .section-container {
@@ -37,26 +135,68 @@
   margin: 0 auto;
 }
 
+/* Decorative "no-background" botanical accents — inline SVG, so they
+   are true cutouts (transparent) that can overlap cards and headings.
+   Pair with a rotation + negative offset at the call site for the
+   overlapping collage effect. */
+.gold-ornament {
+  pointer-events: none;
+  filter: drop-shadow(0 8px 18px rgba(22, 35, 61, 0.25));
+}
+
+/* Scroll-reveal keyframes/rules for [data-aos='fade-up'] live in index.css
+   (the richer curtain-wipe version) — intentionally not duplicated here. */
+
 /* Section Header Typography */
 .section-header {
   margin-bottom: 4.5rem;
+  position: relative;
+}
+
+.section-header::before {
+  content: '';
+  display: block;
+  width: 2px;
+  height: 2.5rem;
+  background: linear-gradient(180deg, transparent, #b8892f, transparent);
+  margin-bottom: 1rem;
 }
 
 .section-header h2 {
-  font-family: 'Bodoni Moda', serif;
+  font-family: 'Fraunces', Georgia, serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
   font-size: clamp(2.6rem, 5.5vw, 5rem);
-  line-height: 0.95;
-  letter-spacing: -0.04em;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
   margin-top: 1rem;
+}
+
+/* Every <em>/<i> in this codebase is used as the same convention: the
+   gold "highlight" word inside a heading. Style it globally so a new
+   headline never has to remember to add the gradient/script classes
+   by hand — this is what keeps every accent word on every page (not
+   just ones wrapped in .section-header) in the handwritten gold face. */
+h1 em, h1 i, h2 em, h2 i, h3 em, h3 i,
+em.text-gold-gradient,
+i.text-gold-gradient {
+  font-family: 'Allura', 'Alex Brush', cursive;
+  font-style: normal;
+  font-weight: 400;
+  background: linear-gradient(120deg, #a87e26, #e8c878, #f6ecd2, #b8892f);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 3px 8px rgba(122, 90, 20, 0.35));
 }
 
 .section-header h2 em,
 .section-header h2 i {
-  font-style: italic;
-  background: linear-gradient(120deg, #d4af37, #fff0a8, #c89824);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-size: 1.28em;
+  line-height: 0.9;
+  display: inline-block;
+  padding: 0 0.05em;
 }
 
 /* Hero Base Layout */
@@ -66,7 +206,7 @@
   display: flex;
   align-items: center;
   overflow: hidden;
-  background: #01040A;
+  background: #060912;
   padding-top: 5.5rem;
 }
 
@@ -81,13 +221,13 @@
 .hero-ambient-orb-gold {
   width: 32rem;
   height: 32rem;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.18) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(184, 137, 47, 0.18) 0%, transparent 70%);
 }
 
 .hero-ambient-orb-navy {
   width: 45rem;
   height: 45rem;
-  background: radial-gradient(circle, rgba(14, 38, 74, 0.45) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(36, 72, 122, 0.45) 0%, transparent 70%);
 }
 
 /* Rotating Tagline Shimmer */
@@ -107,19 +247,21 @@
   filter: brightness(1.06);
 }
 
-/* Gold Badge */
+/* Gold Badge — asymmetric clipped-corner pill, small caps */
 .gold-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.45rem 1rem;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  padding: 0.5rem 1.1rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: #fff1b8;
-  background: rgba(212, 175, 55, 0.1);
-  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #f0dda6;
+  background: rgba(184, 137, 47, 0.1);
+  border: 1px solid rgba(184, 137, 47, 0.35);
+  clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
   backdrop-filter: blur(10px);
 }
 
@@ -127,7 +269,7 @@
 .scroll-mouse {
   width: 22px;
   height: 38px;
-  border: 1.5px solid rgba(212, 175, 55, 0.5);
+  border: 1.5px solid rgba(184, 137, 47, 0.5);
   border-radius: 12px;
   position: relative;
   display: flex;
@@ -138,7 +280,7 @@
 .scroll-mouse-wheel {
   width: 3px;
   height: 7px;
-  background: #d4af37;
+  background: #b8892f;
   border-radius: 2px;
   animation: scrollWheel 2s infinite ease-in-out;
 }
@@ -151,10 +293,34 @@
 
 /* Floating card parallax tilt with darker navy gradient */
 .floating-glass-stat {
-  background: linear-gradient(135deg, rgba(8, 22, 44, 0.9) 0%, rgba(2, 6, 14, 0.96) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.45);
-  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.7), 0 0 25px rgba(212, 175, 55, 0.08);
+  background: linear-gradient(135deg, rgba(15, 35, 64, 0.92) 0%, rgba(5, 8, 16, 0.97) 100%);
+  border: 1px solid rgba(184, 137, 47, 0.45);
+  clip-path: polygon(0 16px, 16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.7), 0 0 25px rgba(184, 137, 47, 0.08);
   backdrop-filter: blur(16px);
+}
+
+/* Destination / press marquee item */
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0 2.25rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(247, 243, 234, 0.55);
+  white-space: nowrap;
+}
+
+.marquee-item .dot {
+  width: 4px;
+  height: 4px;
+  background: #b8892f;
+  transform: rotate(45deg);
+  flex-shrink: 0;
 }
 
 /* Interactive Calculator Sliders */
@@ -163,7 +329,7 @@ input[type="range"].luxury-range {
   appearance: none;
   width: 100%;
   height: 4px;
-  background: rgba(212, 175, 55, 0.25);
+  background: rgba(184, 137, 47, 0.25);
   border-radius: 2px;
   outline: none;
   transition: background 0.3s;
@@ -175,10 +341,10 @@ input[type="range"].luxury-range::-webkit-slider-thumb {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #d4af37;
-  border: 2px solid #fff0a8;
+  background: #b8892f;
+  border: 2px solid #e8c878;
   cursor: pointer;
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.8);
+  box-shadow: 0 0 12px rgba(184, 137, 47, 0.8);
   transition: transform 0.2s ease;
 }
 
@@ -190,18 +356,18 @@ input[type="range"].luxury-range::-webkit-slider-thumb:hover {
 .luxury-input {
   width: 100%;
   background: rgba(3, 10, 22, 0.85);
-  border: 1px solid rgba(212, 175, 55, 0.28);
+  border: 1px solid rgba(184, 137, 47, 0.28);
   padding: 0.95rem 1.25rem;
-  color: #f8fafc;
+  color: #f7f3ea;
   font-size: 0.85rem;
   outline: none;
   transition: all 0.3s ease;
 }
 
 .luxury-input:focus {
-  border-color: #d4af37;
+  border-color: #b8892f;
   background: rgba(6, 18, 38, 0.95);
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+  box-shadow: 0 0 15px rgba(184, 137, 47, 0.25);
 }
 
 .luxury-input::placeholder {

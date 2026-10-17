@@ -1,8 +1,10 @@
+import { BrowserRouter } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 import { StrictMode } from 'react';
 import App from './App';
 import './index.css';
 import Lenis from 'lenis';
+import { LanguageProvider } from './context/LanguageContext';
 
 const lenis = new Lenis({
   duration: 1.2,
@@ -27,7 +29,9 @@ if (!rootElement) {
 
 ReactDOM.createRoot(rootElement).render(
   <StrictMode>
-    <App />
+    <LanguageProvider>
+      <BrowserRouter><App /></BrowserRouter>
+    </LanguageProvider>
   </StrictMode>
 );
 

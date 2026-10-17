@@ -1,147 +1,13 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MoveUpRight, SlidersHorizontal, X, Bed, Bath, Maximize2, ShieldCheck, PhoneCall, Calendar, MapPin } from 'lucide-react';
+import { MoveUpRight, SlidersHorizontal, X, Bed, Bath, Maximize2, ShieldCheck, PhoneCall, Calendar, MapPin, Sparkles } from 'lucide-react';
 import PageHero from '../components/layout/PageHero';
+import { allProperties, slugify, type Property } from '../data/properties';
+import { apiRequest } from '../lib/api';
+import { resolvePropertyImageUrl, handleImageError } from '../lib/media';
 
-interface Property {
-  id: string;
-  name: string;
-  city: string;
-  neighborhood: string;
-  priceNum: number;
-  price: string;
-  type: string;
-  beds: number;
-  baths: number;
-  sqft: string;
-  img: string;
-  gallery: string[];
-  description: string;
-  amenities: string[];
-  tag: string;
-}
 
-const allProperties: Property[] = [
-  {
-    id: 'prop-1',
-    name: 'Villa Sole di Mare',
-    city: 'Miami Beach',
-    neighborhood: 'Star Island',
-    priceNum: 18950000,
-    price: '$18,950,000',
-    type: 'Waterfront Estate',
-    beds: 6,
-    baths: 8,
-    sqft: '8,450',
-    img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85',
-    gallery: [
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85'
-    ],
-    description: 'An architectural tour-de-force poised on the most exclusive private island in Biscayne Bay. Features 120 feet of prime deep-water frontage, private mega-yacht dock, infinity pool, and bespoke Italian craftsmanship throughout.',
-    amenities: ['Private Yacht Dock', 'Wine Cellar (1,200 bottles)', 'Infinity Pool', 'Smart Home Automation', 'Staff Quarters'],
-    tag: 'STAR ISLAND EXCLUSIVE'
-  },
-  {
-    id: 'prop-2',
-    name: 'The Breakers Ocean Estate',
-    city: 'Palm Beach',
-    neighborhood: 'South Ocean Blvd',
-    priceNum: 24500000,
-    price: '$24,500,000',
-    type: 'Historic Compound',
-    beds: 7,
-    baths: 9,
-    sqft: '11,200',
-    img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
-    gallery: [
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1600&q=85'
-    ],
-    description: 'Mizner-inspired timeless Mediterranean compound featuring direct deeded ocean access, manicured coral stone loggias, tennis pavilion, and guest estate on lush tropical grounds.',
-    amenities: ['Deeded Oceanfront', 'Championship Tennis Court', 'Separate Guest Villa', 'Coral Stone Loggias', 'Sub-Zero & La Cornue Kitchen'],
-    tag: 'PALM BEACH COMPOUND'
-  },
-  {
-    id: 'prop-3',
-    name: 'Aura Crown Penthouse',
-    city: 'Brickell',
-    neighborhood: 'Brickell Key',
-    priceNum: 14200000,
-    price: '$14,200,000',
-    type: 'Skyline Penthouse',
-    beds: 4,
-    baths: 6,
-    sqft: '6,100',
-    img: 'https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=1600&q=85',
-    gallery: [
-      'https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=1600&q=85',
-      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1600&q=85'
-    ],
-    description: 'Occupying the entire 58th and 59th levels with 360-degree panoramic views of Biscayne Bay and the Miami skyline. Private rooftop glass-bottom plunge pool and private high-speed biometric elevator.',
-    amenities: ['Private Rooftop Pool', 'Biometric Elevator', '360° Panoramic Vistas', 'Custom Poliform Millwork', '4 Valet Spaces'],
-    tag: 'DUPLEX PENTHOUSE'
-  },
-  {
-    id: 'prop-4',
-    name: 'Palazzo di Palma',
-    city: 'Coral Gables',
-    neighborhood: 'Snapper Creek Lakes',
-    priceNum: 11800000,
-    price: '$11,800,000',
-    type: 'Modern Villa',
-    beds: 5,
-    baths: 6,
-    sqft: '7,800',
-    img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85',
-    gallery: [
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85'
-    ],
-    description: 'A contemporary sanctuary enveloped by mature banyan trees and serene waterways. Designed by renowned modernist architects with glass curtain walls and seamless indoor-outdoor living pavilions.',
-    amenities: ['Gated 24h Security', 'Private Marina Basin', 'Designer Fire Pits', 'Zero-Edge Reflection Pool', 'Crestron Lighting'],
-    tag: 'PRIVATE ENCLAVE'
-  },
-  {
-    id: 'prop-5',
-    name: 'Port Royal Sanctuary',
-    city: 'Naples',
-    neighborhood: 'Port Royal Club',
-    priceNum: 29000000,
-    price: '$29,000,000',
-    type: 'Waterfront Estate',
-    beds: 6,
-    baths: 8,
-    sqft: '9,950',
-    img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=85',
-    gallery: [
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=85'
-    ],
-    description: 'One of the crown jewels of Port Royal with cut-through yacht passage to the Gulf of Mexico. Ultra-luxe master suite, private wellness spa, and deeded membership eligibility.',
-    amenities: ['Gulf Yacht Access', 'Wellness Spa & Sauna', 'Outdoor Kitchen & Cabana', 'Elevated Helipad Access', 'Air-Conditioned 6-Car Garage'],
-    tag: 'PORT ROYAL TROPHY'
-  },
-  {
-    id: 'prop-6',
-    name: 'The Venetian Isle Retreat',
-    city: 'Miami Beach',
-    neighborhood: 'Venetian Islands',
-    priceNum: 16500000,
-    price: '$16,500,000',
-    type: 'Modern Villa',
-    beds: 5,
-    baths: 6,
-    sqft: '6,400',
-    img: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1600&q=85',
-    gallery: [
-      'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1600&q=85'
-    ],
-    description: 'Showcasing spectacular Miami sunset views across Biscayne Bay. Features warm organic limestone, ipe wood decking, rooftop terrace, and private dock equipped for two tenders.',
-    amenities: ['Sunset Facing Vistas', 'Rooftop Lounge', 'Limestone & Ipe Finishes', 'Double Tender Dock', 'Chef Prep Kitchen'],
-    tag: 'VENETIAN ISLANDS'
-  }
-];
 
 export default function Properties() {
   const [searchParams] = useSearchParams();
@@ -152,13 +18,39 @@ export default function Properties() {
   const [selectedType, setSelectedType] = useState(initialType);
   const [sortBy, setSortBy] = useState<'featured' | 'price-desc' | 'price-asc'>('featured');
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [remoteProperties, setRemoteProperties] = useState<Property[] | null>(null);
 
   useEffect(() => {
-    document.title = 'The Collection | VITA Luxury Realty';
+    apiRequest<Array<{ id: number; title: string; titleEs: string; slug: string; price: string; location: string; type: string; beds: number; baths: number; sqft: number; image: string | null; gallery: Array<{ src?: string; type: string }>; descriptionEn: string | null; featuresEn: string[] }>>('/properties')
+      .then((properties) => setRemoteProperties(properties.map((property) => ({
+        id: String(property.id),
+        slug: property.slug,
+        name: property.title,
+        city: property.location.split(',')[0]?.trim() || property.location,
+        neighborhood: property.location.split(',').slice(1).join(',').trim() || 'Tampa Bay',
+        priceNum: Number(property.price),
+        price: `$${Number(property.price).toLocaleString('en-US')}`,
+        type: property.type,
+        beds: property.beds,
+        baths: property.baths,
+        sqft: Number(property.sqft).toLocaleString('en-US'),
+        img: resolvePropertyImageUrl(property.image || property.gallery.find((media) => media.src && media.type === 'image')?.src),
+        gallery: property.gallery.filter((media) => media.src).map((media) => resolvePropertyImageUrl(media.src)),
+        description: property.descriptionEn || 'Private residence represented by VITA Luxury Realty.',
+        amenities: property.featuresEn || [],
+        tag: property.type.toUpperCase(),
+        has360: property.gallery.some(
+          (m) =>
+            m.type === 'image360' ||
+            m.type === 'photo360' ||
+            m.type === 'iframe360' ||
+            Boolean(m.src && (m.src.includes('/image360s/') || m.src.includes('360')))
+        ),
+      })))).catch(() => setRemoteProperties(null));
   }, []);
 
   const filteredProperties = useMemo(() => {
-    return allProperties
+    return (remoteProperties || allProperties)
       .filter((p) => {
         if (selectedCity !== 'All' && !p.city.toLowerCase().includes(selectedCity.toLowerCase())) {
           return false;
@@ -173,33 +65,34 @@ export default function Properties() {
         if (sortBy === 'price-asc') return a.priceNum - b.priceNum;
         return 0;
       });
-  }, [selectedCity, selectedType, sortBy]);
+  }, [selectedCity, selectedType, sortBy, remoteProperties]);
 
   return (
-    <main className="bg-[#040B16] text-white">
+    <main className="bg-[#0C1730] text-white">
       {/* 1. Page Hero with Rotating Titles & Scroll Reaction */}
       <PageHero
-        eyebrow="EXCLUSIVE FLORIDA PORTFOLIO"
-        titlePrefix="CURATING"
+        eyebrow="TAMPA BAY LUXURY LISTINGS"
+        titlePrefix="FIND YOUR"
         rotatingWords={[
-          'WATERFRONT SANCTUARIES',
-          'SKYLINE PENTHOUSES',
-          'PRIVATE ISLAND COMPOUNDS',
-          'ARCHITECTURAL ICONS',
+          'Waterfront Home',
+          'South Tampa Estate',
+          'Clearwater Residence',
+          'St. Petersburg Property',
         ]}
-        titleSuffix="IN FLORIDA"
-        description="Explore an exceptional collection of private estates, historic enclaves, and premier waterfront residences across Florida's prime destinations."
+        titleSuffix="IN TAMPA BAY"
+        description="Browse luxury homes, waterfront estates, and private residences for sale in Tampa, Clearwater, St. Petersburg, and surrounding Tampa Bay communities."
         backgroundImage="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1800&q=85"
         badgeText="VERIFIED PRIVATE ASSETS"
         statCard={{
           label: 'TOTAL ACTIVE VALUATION',
           value: '$114.9M+',
-          sub: 'Florida Portfolio',
+          sub: 'Tampa Bay Listings',
         }}
         ctaText="REQUEST PRIVATE VIEWING"
         ctaLink="/contact"
         ctaSecondaryText="VIEW OFF-MARKET ASSETS"
         ctaSecondaryLink="/buy"
+        coordinates="FIND YOUR PLACE IN THE EXTRAORDINARY"
       />
 
       {/* 2. Interactive Filter & Sorting Strip */}
@@ -207,18 +100,18 @@ export default function Properties() {
         <div className="gold-glass-card p-6 rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.6)] flex flex-wrap items-center justify-between gap-4">
           {/* City Filter Pills */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[10px] font-bold tracking-[0.2em] text-[#D4AF37] uppercase mr-2 flex items-center gap-1.5">
+            <span className="text-[10px] font-accent font-semibold tracking-[0.2em] text-[#B8892F] uppercase mr-2 flex items-center gap-1.5">
               <SlidersHorizontal size={13} />
               LOCATION:
             </span>
-            {['All', 'Miami Beach', 'Palm Beach', 'Brickell', 'Coral Gables', 'Naples'].map((city) => (
+            {['All', 'Tampa', 'Clearwater', 'St. Petersburg', 'South Tampa', 'Davis Islands', 'Miami Beach', 'Palm Beach'].map((city) => (
               <button
                 key={city}
                 onClick={() => setSelectedCity(city)}
                 className={`text-[10px] font-semibold tracking-wider px-3.5 py-1.5 rounded-sm transition-all ${
                   selectedCity === city
-                    ? 'bg-[#D4AF37] text-[#040B16] font-bold shadow-[0_0_15px_rgba(212,175,55,0.4)]'
-                    : 'bg-[#071936]/80 text-white/70 hover:text-white hover:bg-[#071936] border border-white/10'
+                    ? 'bg-[#B8892F] text-[#0C1730] font-bold shadow-[0_0_15px_rgba(184,137,47,0.4)]'
+                    : 'bg-[#132C52]/80 text-white/70 hover:text-white hover:bg-[#132C52] border border-white/10'
                 }`}
               >
                 {city.toUpperCase()}
@@ -233,11 +126,11 @@ export default function Properties() {
               onChange={(e) => setSelectedType(e.target.value)}
               className="luxury-input !py-2 !text-xs cursor-pointer"
             >
-              <option value="All" className="bg-[#07172e]">All Architectural Types</option>
-              <option value="Waterfront Estate" className="bg-[#07172e]">Waterfront Estate</option>
-              <option value="Skyline Penthouse" className="bg-[#07172e]">Skyline Penthouse</option>
-              <option value="Modern Villa" className="bg-[#07172e]">Modern Villa</option>
-              <option value="Historic Compound" className="bg-[#07172e]">Historic Compound</option>
+              <option value="All" className="bg-[#132548]">All Architectural Types</option>
+              <option value="Waterfront Estate" className="bg-[#132548]">Waterfront Estate</option>
+              <option value="Skyline Penthouse" className="bg-[#132548]">Skyline Penthouse</option>
+              <option value="Modern Villa" className="bg-[#132548]">Modern Villa</option>
+              <option value="Historic Compound" className="bg-[#132548]">Historic Compound</option>
             </select>
 
             <select
@@ -245,9 +138,9 @@ export default function Properties() {
               onChange={(e) => setSortBy(e.target.value as any)}
               className="luxury-input !py-2 !text-xs cursor-pointer"
             >
-              <option value="featured" className="bg-[#07172e]">Sort: Curated</option>
-              <option value="price-desc" className="bg-[#07172e]">Valuation: High to Low</option>
-              <option value="price-asc" className="bg-[#07172e]">Valuation: Low to High</option>
+              <option value="featured" className="bg-[#132548]">Sort: Curated</option>
+              <option value="price-desc" className="bg-[#132548]">Valuation: High to Low</option>
+              <option value="price-asc" className="bg-[#132548]">Valuation: Low to High</option>
             </select>
           </div>
         </div>
@@ -258,12 +151,12 @@ export default function Properties() {
         <div className="section-container">
           <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
             <p className="text-xs text-white/60 tracking-wider">
-              SHOWING <strong className="text-[#D4AF37]">{filteredProperties.length}</strong> EXCLUSIVE RESIDENCES
+              SHOWING <strong className="text-[#B8892F]">{filteredProperties.length}</strong> EXCLUSIVE RESIDENCES
             </p>
             {(selectedCity !== 'All' || selectedType !== 'All') && (
               <button
                 onClick={() => { setSelectedCity('All'); setSelectedType('All'); }}
-                className="text-xs text-[#D4AF37] hover:underline tracking-wider uppercase font-semibold"
+                className="text-xs text-[#B8892F] hover:underline tracking-wider uppercase font-semibold"
               >
                 Reset Filters
               </button>
@@ -280,41 +173,47 @@ export default function Properties() {
                 className="group gold-glass-card rounded-sm overflow-hidden flex flex-col justify-between"
               >
                 {/* Image */}
-                <div
-                  className="relative aspect-[16/11] overflow-hidden bg-[#061730] cursor-pointer"
-                  onClick={() => setSelectedProperty(property)}
+                <Link
+                  to={`/properties/${property.slug || slugify(property.name)}`}
+                  className="relative aspect-[3/2] overflow-hidden bg-[#0F2244]"
                 >
                   <img
                     src={property.img}
                     alt={property.name}
                     loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-108 filter brightness-[0.88] group-hover:brightness-100"
+                    onError={handleImageError}
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-108 filter brightness-[0.96] group-hover:brightness-100"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#040B16] via-transparent to-transparent opacity-80" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0C1730] via-transparent to-transparent opacity-60" />
                   <span className="absolute top-4 left-4 gold-badge text-[8px]">
                     {property.tag}
                   </span>
-                  <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#040B16]/80 border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37] transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1">
+                  {property.has360 && (
+                    <span className="absolute bottom-3 left-4 gold-badge text-[8px] bg-[#0C1730]/90 border border-[#B8892F] shadow-lg flex items-center gap-1 font-bold">
+                      <Sparkles size={10} className="text-[#f0dda6]" />
+                      360° TOUR
+                    </span>
+                  )}
+                  <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#0C1730]/80 border border-[#B8892F]/50 flex items-center justify-center text-[#B8892F] transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1">
                     <MoveUpRight size={15} />
                   </div>
-                </div>
+                </Link>
 
                 {/* Meta */}
                 <div className="p-6 space-y-4">
                   <div>
-                    <span className="text-[10px] tracking-[0.22em] font-bold text-[#D4AF37] uppercase block">
-                      {property.city} · {property.neighborhood}
+                    <span className="text-[10px] tracking-[0.22em] font-bold text-[#B8892F] uppercase block">
+                      {property.city} Â· {property.neighborhood}
                     </span>
                     <h3
-                      onClick={() => setSelectedProperty(property)}
-                      className="display text-2xl text-white font-normal mt-1 cursor-pointer hover:text-[#fff1b8] transition-colors"
+                      className="display text-2xl text-white font-normal mt-1 cursor-pointer hover:text-[#f0dda6] transition-colors"
                     >
-                      {property.name}
+                      <Link to={`/properties/${property.slug || slugify(property.name)}`}>{property.name}</Link>
                     </h3>
                   </div>
 
                   {/* Specs */}
-                  <div className="grid grid-cols-3 gap-2 py-3 border-y border-[#D4AF37]/15 text-xs text-white/70 text-center">
+                  <div className="grid grid-cols-3 gap-2 py-3 border-y border-[#B8892F]/15 text-xs text-white/70 text-center">
                     <div>
                       <span className="text-[9px] text-white/40 uppercase block">Beds</span>
                       <strong className="text-white">{property.beds} Beds</strong>
@@ -334,12 +233,12 @@ export default function Properties() {
                       <span className="text-[9px] text-white/40 uppercase block">Offered At</span>
                       <strong className="display text-2xl text-white font-normal">{property.price}</strong>
                     </div>
-                    <button
-                      onClick={() => setSelectedProperty(property)}
+                    <Link
+                      to={`/properties/${property.slug || slugify(property.name)}`}
                       className="luxury-btn-outline !py-2 !px-4 !text-[9px]"
                     >
                       DETAILS
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </motion.article>
@@ -368,12 +267,12 @@ export default function Properties() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-[#040B16] border border-[#D4AF37]/50 rounded-sm shadow-[0_30px_90px_rgba(0,0,0,0.9)] p-6 sm:p-8"
+              className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-[#0C1730] border border-[#B8892F]/50 rounded-sm shadow-[0_30px_90px_rgba(0,0,0,0.9)] p-6 sm:p-8"
             >
               {/* Close button */}
               <button
                 onClick={() => setSelectedProperty(null)}
-                className="absolute top-6 right-6 z-10 w-10 h-10 rounded-full bg-[#071936] border border-[#D4AF37]/40 flex items-center justify-center text-white hover:text-[#D4AF37] transition-colors"
+                className="absolute top-6 right-6 z-10 w-10 h-10 rounded-full bg-[#132C52] border border-[#B8892F]/40 flex items-center justify-center text-white hover:text-[#B8892F] transition-colors"
               >
                 <X size={20} />
               </button>
@@ -386,16 +285,17 @@ export default function Properties() {
                     {selectedProperty.name}
                   </h2>
                   <p className="text-xs text-white/60 tracking-wider flex items-center gap-2 mt-1">
-                    <MapPin size={14} className="text-[#D4AF37]" />
+                    <MapPin size={14} className="text-[#B8892F]" />
                     {selectedProperty.neighborhood}, {selectedProperty.city}, Florida
                   </p>
                 </div>
 
                 {/* Big Image */}
-                <div className="relative aspect-[16/9] overflow-hidden rounded-sm border border-[#D4AF37]/30">
+                <div className="relative aspect-[16/9] overflow-hidden rounded-sm border border-[#B8892F]/30">
                   <img
                     src={selectedProperty.img}
                     alt={selectedProperty.name}
+                    onError={handleImageError}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute bottom-4 left-4 gold-badge">
@@ -406,26 +306,26 @@ export default function Properties() {
                 {/* Specs Strip */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 gold-glass-card rounded-sm text-center">
                   <div className="flex flex-col items-center gap-1">
-                    <Bed size={18} className="text-[#D4AF37]" />
+                    <Bed size={18} className="text-[#B8892F]" />
                     <span className="text-sm font-semibold">{selectedProperty.beds} Bedrooms</span>
                   </div>
                   <div className="flex flex-col items-center gap-1 border-l border-white/10">
-                    <Bath size={18} className="text-[#D4AF37]" />
+                    <Bath size={18} className="text-[#B8892F]" />
                     <span className="text-sm font-semibold">{selectedProperty.baths} Bathrooms</span>
                   </div>
                   <div className="flex flex-col items-center gap-1 border-l border-white/10">
-                    <Maximize2 size={18} className="text-[#D4AF37]" />
+                    <Maximize2 size={18} className="text-[#B8892F]" />
                     <span className="text-sm font-semibold">{selectedProperty.sqft} Living SQ FT</span>
                   </div>
                   <div className="flex flex-col items-center gap-1 border-l border-white/10">
-                    <ShieldCheck size={18} className="text-[#D4AF37]" />
+                    <ShieldCheck size={18} className="text-[#B8892F]" />
                     <span className="text-sm font-semibold">Deeded Ownership</span>
                   </div>
                 </div>
 
                 {/* Description */}
                 <div>
-                  <h4 className="text-xs font-bold tracking-[0.2em] text-[#D4AF37] uppercase mb-2">
+                  <h4 className="text-xs font-accent font-semibold tracking-[0.2em] text-[#B8892F] uppercase mb-2">
                     ARCHITECTURAL SUMMARY
                   </h4>
                   <p className="text-sm text-white/80 font-light leading-relaxed">
@@ -435,16 +335,16 @@ export default function Properties() {
 
                 {/* Curated Amenities */}
                 <div>
-                  <h4 className="text-xs font-bold tracking-[0.2em] text-[#D4AF37] uppercase mb-3">
+                  <h4 className="text-xs font-accent font-semibold tracking-[0.2em] text-[#B8892F] uppercase mb-3">
                     RESIDENCE AMENITIES
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {selectedProperty.amenities.map((amenity) => (
                       <span
                         key={amenity}
-                        className="px-3 py-1.5 rounded-sm bg-[#071936] border border-[#D4AF37]/30 text-xs text-white/80"
+                        className="px-3 py-1.5 rounded-sm bg-[#132C52] border border-[#B8892F]/30 text-xs text-white/80"
                       >
-                        ✓ {amenity}
+                        âœ“ {amenity}
                       </span>
                     ))}
                   </div>
@@ -454,7 +354,7 @@ export default function Properties() {
                 <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
                   <div>
                     <span className="text-[10px] text-white/50 tracking-widest uppercase block">Offered At</span>
-                    <strong className="display text-3xl text-[#fff1b8] font-normal">{selectedProperty.price}</strong>
+                    <strong className="display text-3xl text-[#f0dda6] font-normal">{selectedProperty.price}</strong>
                   </div>
 
                   <div className="flex items-center gap-3">
@@ -466,7 +366,7 @@ export default function Properties() {
                       <span>SCHEDULE PRIVATE TOUR</span>
                     </Link>
                     <a
-                      href="tel:+13055558482"
+                      href="tel:+18134129468"
                       className="luxury-btn-outline flex items-center gap-2"
                     >
                       <PhoneCall size={14} />
@@ -482,3 +382,4 @@ export default function Properties() {
     </main>
   );
 }
+

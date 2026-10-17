@@ -1,0 +1,53 @@
+# VITA Luxury Realty - Apache 2.4, deployed at the domain root.
+# Requires mod_rewrite and AllowOverride FileInfo Indexes Options.
+# Source: public/.htaccess; Vite copies it to dist on every build.
+Options -Indexes -MultiViews
+# Routes are real directories, but their public URLs have no trailing slash.
+# Disable mod_dir redirects to avoid /insights <-> /insights/ loops.
+# Directory listing remains disabled by Options -Indexes above.
+DirectorySlash Off
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+RewriteEngine On
+
+# Normalize explicit index.html requests only (avoid internal rewrite loops).
+RewriteCond %{THE_REQUEST} \s/+index\.html[?\s] [NC]
+RewriteRule ^index\.html$ / [R=301,END]
+RewriteCond %{THE_REQUEST} \s/+(properties|buy|sell|agents|about|insights|contact|join-team)/index\.html[?\s] [NC]
+RewriteRule ^(properties|buy|sell|agents|about|insights|contact|join-team)/index\.html$ /$1 [R=301,END]
+
+# Canonical page URLs have no trailing slash.
+RewriteRule ^(properties|buy|sell|agents|about|insights|contact|join-team)/+$ /$1 [R=301,END]
+RewriteRule ^(properties|insights)/([a-zA-Z0-9_-]+)/+$ /$1/$2 [R=301,END]
+
+# Serve pre-rendered HTML internally; absolute targets avoid inherited RewriteBase.
+RewriteRule ^$ /index.html [END]
+RewriteRule ^(properties|buy|sell|agents|about|insights|contact|join-team)$ /$1/index.html [END]
+
+# Keep actual assets, sitemap, robots and HTML files accessible.
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [END]
+
+# API-backed listing pages use the neutral React shell, never the homepage.
+RewriteRule ^(properties|insights)/[a-zA-Z0-9_-]+$ /app.html [END]
+
+# Unknown URLs and missing assets return a real 404, not a soft-404 homepage.
+RewriteRule ^ - [R=404,END]
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json application/xml text/xml image/svg+xml
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|xml|txt)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
+# Runtime backend configuration must not be cached.
+<IfModule mod_headers.c>
+  <Files "config.json">
+    Header set Cache-Control "no-store, max-age=0"
+  </Files>
+</IfModule>

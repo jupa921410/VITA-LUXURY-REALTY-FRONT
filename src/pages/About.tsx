@@ -1,28 +1,40 @@
-import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Award, Compass, ShieldCheck, Sparkles, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PageHero from '../components/layout/PageHero';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function About() {
-  useEffect(() => {
-    document.title = 'Our Heritage | VITA Luxury Realty';
-  }, []);
+  const { t } = useLanguage();
+
+  const pillars = [
+    { icon: ShieldCheck, title: t('pillar1Title'), desc: t('pillar1Desc') },
+    { icon: Sparkles, title: t('pillar2Title'), desc: t('pillar2Desc') },
+    { icon: Compass, title: t('pillar3Title'), desc: t('pillar3Desc') },
+    { icon: Award, title: t('pillar4Title'), desc: t('pillar4Desc') },
+  ];
+
+  const milestones = [
+    { year: '2011', title: t('milestone1Title'), desc: t('milestone1Desc') },
+    { year: '2016', title: t('milestone2Title'), desc: t('milestone2Desc') },
+    { year: '2020', title: t('milestone3Title'), desc: t('milestone3Desc') },
+    { year: '2026', title: t('milestone4Title'), desc: t('milestone4Desc') },
+  ];
 
   return (
-    <main className="bg-[#040B16] text-white">
-      {/* 1. Page Hero with Rotating Titles & Scroll Reaction */}
+    <main className="bg-[#0C1730] text-white">
+      {/* 1. Page Hero */}
       <PageHero
-        eyebrow="HERITAGE &amp; PHILOSOPHY"
+        eyebrow={t('aboutEyebrow')}
         titlePrefix="THE ESSENCE OF"
         rotatingWords={[
-          'LIVE THE VITA',
-          'ARCHITECTURAL ARTISTRY',
-          'TIMELESS REFINEMENT',
-          'UNCOMPROMISING LUXURY',
+          'Live The Vita',
+          'Architectural Artistry',
+          'Timeless Refinement',
+          'Uncompromising Luxury',
         ]}
         titleSuffix="REALTY"
-        description="More than transactions. We curate and represent the way exceptional living should feel across Florida’s most historic and visionary destinations."
+        description={t('aboutHeroDesc')}
         backgroundImage="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1800&q=85"
         badgeText="ESTABLISHED 2011"
         statCard={{
@@ -30,10 +42,11 @@ export default function About() {
           value: '$2.4B+',
           sub: 'Florida Private Portfolio',
         }}
-        ctaText="SPEAK WITH MANAGING PARTNERS"
+        ctaText={t('aboutHeroCta')}
         ctaLink="/contact"
-        ctaSecondaryText="EXPLORE OUR RESIDENCES"
+        ctaSecondaryText={t('aboutHeroCtaSecondary')}
         ctaSecondaryLink="/properties"
+        coordinates="LIVE BEYOND EXPECTATION"
       />
 
       {/* 2. Brand Story & Ethos */}
@@ -47,27 +60,26 @@ export default function About() {
               transition={{ duration: 0.8 }}
               className="lg:col-span-6 space-y-6"
             >
-              <span className="eyebrow">OUR POINT OF VIEW</span>
+              <span className="eyebrow">{t('aboutPointOfView')}</span>
               <h2 className="display text-3xl sm:text-5xl text-white font-normal leading-[1.05]">
-                Architecture as a <br />
-                <i>Way of Life.</i>
+                {t('aboutH2')}
               </h2>
               <div className="w-24 gold-rule" />
               <p className="text-white/75 text-sm sm:text-base font-light leading-relaxed">
-                VITA was founded on a singular conviction: that exceptional real estate is not merely square footage, but an architectural vessel for an elevated human experience.
+                {t('aboutP1')}
               </p>
               <p className="text-white/65 text-sm font-light leading-relaxed">
-                Headquartered in Miami with private advisory suites in Palm Beach, we serve a global clientele of founders, industrialists, and collectors. We reject transactional velocity in favor of obsessive curation and generational discretion.
+                {t('aboutP2')}
               </p>
 
               <div className="grid grid-cols-2 gap-6 pt-4 border-t border-white/10">
                 <div>
-                  <strong className="display text-3xl text-[#fff1b8] font-normal">15+</strong>
-                  <span className="text-xs text-white/50 block mt-1">Years of Florida Advisory</span>
+                  <strong className="display text-3xl text-[#f0dda6] font-normal">15+</strong>
+                  <span className="text-xs text-white/50 block mt-1">{t('aboutStat1Label')}</span>
                 </div>
                 <div>
-                  <strong className="display text-3xl text-[#fff1b8] font-normal">99.4%</strong>
-                  <span className="text-xs text-white/50 block mt-1">Client Retention Rate</span>
+                  <strong className="display text-3xl text-[#f0dda6] font-normal">99.4%</strong>
+                  <span className="text-xs text-white/50 block mt-1">{t('aboutStat2Label')}</span>
                 </div>
               </div>
             </motion.div>
@@ -77,14 +89,14 @@ export default function About() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="lg:col-span-6 relative aspect-[4/3] rounded-sm overflow-hidden border border-[#D4AF37]/35 shadow-[0_30px_70px_rgba(0,0,0,0.8)]"
+              className="lg:col-span-6 relative aspect-[4/3] rounded-sm overflow-hidden border border-[#B8892F]/35 shadow-[0_30px_70px_rgba(0,0,0,0.8)]"
             >
-              <img
+              <img loading="lazy" decoding="async"
                 src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85"
                 alt="VITA Architectural Presence"
                 className="w-full h-full object-cover filter contrast-[1.08]"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#040B16] via-transparent to-transparent opacity-60" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0C1730] via-transparent to-transparent opacity-60" />
             </motion.div>
           </div>
         </div>
@@ -94,40 +106,19 @@ export default function About() {
       <section className="luxury-section-alt">
         <div className="section-container">
           <div className="section-header text-center max-w-2xl mx-auto">
-            <span className="eyebrow">OUR CORE PRINCIPLES</span>
+            <span className="eyebrow">{t('aboutPillarsEyebrow')}</span>
             <h2 className="display">
-              Pillars of <i>Distinction.</i>
+              {t('aboutPillarsH2')}
             </h2>
             <div className="w-24 mx-auto my-4 gold-rule" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                icon: ShieldCheck,
-                title: 'Absolute Discretion',
-                desc: 'Client identity and transactional terms are safeguarded behind multi-layered legal and operational protocols.',
-              },
-              {
-                icon: Sparkles,
-                title: 'Architectural Provenance',
-                desc: 'We represent only properties that reflect genuine architectural importance, rare views, and superior craftsmanship.',
-              },
-              {
-                icon: Compass,
-                title: 'Market Intelligence',
-                desc: 'Proprietary valuation models, off-market transaction data, and sovereign wealth capital flow analysis.',
-              },
-              {
-                icon: Award,
-                title: 'Generational Fiduciary',
-                desc: 'Advising families across generations on estate consolidation, 1031 exchanges, and generational acquisitions.',
-              },
-            ].map((pillar, idx) => {
+            {pillars.map((pillar, idx) => {
               const Icon = pillar.icon;
               return (
                 <div key={idx} className="gold-glass-card p-8 rounded-sm space-y-4">
-                  <div className="w-12 h-12 rounded-sm bg-[#081d3d] border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37]">
+                  <div className="w-12 h-12 rounded-sm bg-[#12356A] border border-[#B8892F]/40 flex items-center justify-center text-[#B8892F]">
                     <Icon size={20} />
                   </div>
                   <h3 className="display text-2xl text-white font-normal">{pillar.title}</h3>
@@ -143,21 +134,16 @@ export default function About() {
       <section className="luxury-section">
         <div className="section-container max-w-4xl">
           <div className="section-header text-center max-w-xl mx-auto">
-            <span className="eyebrow">A DECADE OF LANDMARKS</span>
-            <h2 className="display">Key <i>Milestones.</i></h2>
+            <span className="eyebrow">{t('aboutTimelineEyebrow')}</span>
+            <h2 className="display">{t('aboutTimelineH2')}</h2>
             <div className="w-20 mx-auto my-4 gold-rule" />
           </div>
 
-          <div className="space-y-8 border-l border-[#D4AF37]/30 pl-6 sm:pl-10 ml-4 sm:ml-8">
-            {[
-              { year: '2011', title: 'Founding of VITA Luxury Realty', desc: 'Established in Brickell with an initial advisory portfolio of $120M in private waterfront holdings.' },
-              { year: '2016', title: 'Palm Beach Private Office Expansion', desc: 'Inauguration of our dedicated Palm Beach office on Worth Avenue, catering to classic island estates.' },
-              { year: '2020', title: '$1 Billion Transaction Threshold', desc: 'Surpassing $1B in closed transactions with record-setting sales across Star Island and Gables Estates.' },
-              { year: '2026', title: 'Global Family Office Advisory', desc: 'Managing an active Florida collection surpassing $2.4B in private representation and off-market syndication.' },
-            ].map((milestone, idx) => (
+          <div className="space-y-8 border-l border-[#B8892F]/30 pl-6 sm:pl-10 ml-4 sm:ml-8">
+            {milestones.map((milestone, idx) => (
               <div key={idx} className="relative group">
-                <span className="absolute -left-[31px] sm:-left-[47px] top-1 w-3 h-3 rounded-full bg-[#040B16] border-2 border-[#D4AF37] group-hover:bg-[#D4AF37] transition-colors" />
-                <span className="text-xs font-bold tracking-[0.24em] text-[#D4AF37] block">{milestone.year}</span>
+                <span className="absolute -left-[31px] sm:-left-[47px] top-1 w-3 h-3 rounded-full bg-[#0C1730] border-2 border-[#B8892F] group-hover:bg-[#B8892F] transition-colors" />
+                <span className="text-xs font-accent font-semibold tracking-[0.24em] text-[#B8892F] block">{milestone.year}</span>
                 <h3 className="display text-2xl text-white font-normal mt-1">{milestone.title}</h3>
                 <p className="text-xs text-white/65 font-light mt-1 max-w-xl leading-relaxed">{milestone.desc}</p>
               </div>
@@ -170,14 +156,14 @@ export default function About() {
       <section className="luxury-section-alt text-center">
         <div className="max-w-2xl mx-auto space-y-6">
           <h2 className="display text-3xl sm:text-5xl text-white font-normal">
-            Experience the <i>VITA Standard.</i>
+            {t('aboutCtaH2')}
           </h2>
           <p className="text-white/70 text-sm font-light">
-            We invite you to experience real estate representation conducted at the highest level of discretion and sophistication.
+            {t('aboutCtaP')}
           </p>
           <div className="pt-2">
             <Link to="/contact" className="luxury-btn-primary">
-              <span>SCHEDULE AN INTRODUCTORY MEETING</span>
+              <span>{t('aboutCtaBtn')}</span>
               <ArrowRight size={14} />
             </Link>
           </div>

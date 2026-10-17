@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;1,6..96,400;1,6..96,600&family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400;1,500&family=Cinzel:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&family=Parisienne&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Alex+Brush&family=Allura&display=swap');
 @import "tailwindcss";
 @config "../tailwind.config.ts";
 
@@ -8,17 +8,18 @@
   }
   html {
     scroll-behavior: smooth;
-    background: #01040A;
+    background: #05070C;
     color-scheme: dark;
   }
   body {
     margin: 0;
     overflow-x: hidden;
-    background: #01040A;
-    color: #f8fafc;
-    font-family: 'Montserrat', sans-serif;
-    selection-background-color: #d4af37;
-    selection-color: #01040A;
+    background: #05070C;
+    color: #f7f3ea;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    selection-background-color: #b8892f;
+    selection-color: #05070C;
   }
   button, input, select, textarea {
     font: inherit;
@@ -28,70 +29,143 @@
     text-decoration: none;
   }
   ::selection {
-    background: #d4af37;
-    color: #01040A;
+    background: #b8892f;
+    color: #05070C;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #05070C;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #b8892f, #6b4d13);
+    border: 2px solid #05070C;
   }
 }
 
-/* Luxury Typography & Gradients */
+/* ============================================================
+   Radical Luxury Typography — Fraunces (editorial serif) +
+   Cinzel (inscriptional caps) + Manrope (modern sans)
+   ============================================================ */
 .display {
-  font-family: 'Bodoni Moda', Didot, Georgia, serif;
+  font-family: 'Fraunces', Georgia, serif;
+  font-optical-sizing: auto;
+  font-feature-settings: 'ss01' 1, 'ss02' 1;
+}
+
+.font-accent {
+  font-family: 'Cinzel', serif;
+}
+
+/* Modern handwritten / elegant script / luxury hand-lettering accent.
+   Reserved for emphasised "highlight" words — never for functional UI
+   text (nav, buttons, form labels) where a script face hurts legibility. */
+.font-script {
+  font-family: 'Parisienne', 'Cormorant Garamond', cursive;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.font-script-bold {
+  font-family: 'Alex Brush', 'Allura', cursive;
+  font-weight: 400;
+  line-height: 1;
 }
 
 .text-gold-gradient {
-  background: linear-gradient(135deg, #d4af37 0%, #fff1b8 40%, #c99c27 70%, #fbe8a6 100%);
+  background: linear-gradient(120deg, #a87e26 0%, #e8c878 35%, #f6ecd2 50%, #e8c878 65%, #a87e26 100%);
+  background-size: 220% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  animation: goldSheen 9s ease-in-out infinite;
+  /* filter (not text-shadow, which can't render on a clipped/transparent
+     fill) casts a soft warm shadow so gold text still pops off lighter,
+     cream-toned surfaces. */
+  filter: drop-shadow(0 3px 10px rgba(122, 90, 20, 0.35)) drop-shadow(0 1px 2px rgba(76, 55, 10, 0.3));
+}
+
+/* Same warm drop-shadow, for solid (non-gradient) gold elements —
+   icons, rules, badges — so they read the same way against light panels. */
+.gold-shadow {
+  filter: drop-shadow(0 2px 6px rgba(122, 90, 20, 0.3));
 }
 
 .text-gold-subtle {
-  color: #e5c158;
+  color: #d8b667;
 }
 
 .eyebrow {
-  color: #d4af37;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.28em;
+  font-family: 'Cinzel', serif;
+  color: #d8b667;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
   line-height: 1.4;
   text-transform: uppercase;
 }
 
 .eyebrow-dark {
-  color: #d4af37;
-  opacity: 0.9;
+  color: #d8b667;
+  opacity: 0.92;
 }
 
 .gold-rule {
   height: 1px;
-  background: linear-gradient(90deg, transparent, #d4af37 25%, #fff1b8 50%, #d4af37 75%, transparent);
+  background: linear-gradient(90deg, transparent, #b8892f 20%, #f0dda6 50%, #b8892f 80%, transparent);
+  position: relative;
+}
+
+.gold-rule::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  background: #f0dda6;
+  transform: translate(-50%, -50%) rotate(45deg);
+  box-shadow: 0 0 8px rgba(232, 200, 120, 0.8);
 }
 
 .gold-rule-subtle {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.35) 50%, transparent);
+  background: linear-gradient(90deg, transparent, rgba(184, 137, 47, 0.35) 50%, transparent);
 }
 
-/* Glassmorphism & Luxury Cards with Darker Navy Gradients */
+@keyframes goldSheen {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+/* ============================================================
+   Asymmetric-cut Cards — the signature "clipped corner" motif
+   replaces the old glassmorphism/HUD-bracket language
+   ============================================================ */
 .gold-glass-card {
-  background: linear-gradient(145deg, rgba(6, 16, 34, 0.88) 0%, rgba(2, 6, 15, 0.96) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.28);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  box-shadow: 0 24px 60px -10px rgba(1, 4, 10, 0.85), 0 0 25px rgba(212, 175, 55, 0.05);
+  position: relative;
+  background: linear-gradient(150deg, rgba(15, 35, 64, 0.55) 0%, rgba(6, 9, 18, 0.85) 100%);
+  border: 1px solid rgba(184, 137, 47, 0.28);
+  clip-path: polygon(0 22px, 22px 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.85);
+  transition: border-color 0.5s ease, box-shadow 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .gold-glass-card:hover {
-  border-color: rgba(212, 175, 55, 0.55);
-  box-shadow: 0 30px 70px -10px rgba(1, 4, 10, 0.92), 0 0 35px rgba(212, 175, 55, 0.14);
+  border-color: rgba(232, 200, 120, 0.6);
+  box-shadow: 0 40px 90px -15px rgba(0, 0, 0, 0.9), 0 0 40px rgba(184, 137, 47, 0.12);
+  transform: translateY(-4px);
 }
 
 .dark-glass-surface {
-  background: linear-gradient(135deg, rgba(4, 12, 26, 0.85) 0%, rgba(2, 6, 14, 0.92) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: linear-gradient(150deg, rgba(15, 35, 64, 0.5) 0%, rgba(5, 7, 12, 0.9) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 /* Scroll Progress Bar */
@@ -99,46 +173,49 @@
   position: fixed;
   inset: 0 0 auto;
   z-index: 999;
-  height: 2px;
-  background: rgba(4, 11, 22, 0.5);
+  height: 3px;
+  background: rgba(5, 7, 12, 0.6);
   pointer-events: none;
 }
 
 .scroll-progress span {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #9a721d, #d4af37, #fff1b8, #d4af37);
+  background: linear-gradient(90deg, #6b4d13, #b8892f, #f0dda6, #b8892f);
   transform-origin: left;
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+  box-shadow: 0 0 12px rgba(184, 137, 47, 0.75);
 }
 
-/* Luxury Action Button */
+/* ============================================================
+   Signature button — asymmetric clipped corner, serif small
+   caps label, magnetic-ready (movement applied via App.tsx)
+   ============================================================ */
 .luxury-btn-primary {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  padding: 0.95rem 1.8rem;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  gap: 0.7rem;
+  padding: 1rem 2rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #040b16;
-  background: linear-gradient(110deg, #956c1b 0%, #d4af37 38%, #fff0a8 55%, #c89a2a 75%, #8f6515 100%);
-  background-size: 200% auto;
-  border: 1px solid #f6de8f;
-  border-radius: 1px;
+  color: #05070C;
+  background: linear-gradient(110deg, #7e5c18 0%, #b8892f 38%, #f0dda6 55%, #a87e26 75%, #6b4d13 100%);
+  background-size: 220% auto;
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
   overflow: hidden;
-  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 10px 25px rgba(212, 175, 55, 0.22);
+  transition: background-position 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+  box-shadow: 0 12px 28px rgba(184, 137, 47, 0.22);
   cursor: pointer;
+  will-change: transform;
 }
 
 .luxury-btn-primary:hover {
   background-position: right center;
-  transform: translateY(-2px);
-  box-shadow: 0 14px 35px rgba(212, 175, 55, 0.38), 0 0 20px rgba(255, 240, 168, 0.4);
+  box-shadow: 0 18px 40px rgba(184, 137, 47, 0.4), 0 0 24px rgba(240, 221, 166, 0.35);
 }
 
 .luxury-btn-outline {
@@ -146,26 +223,28 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  padding: 0.9rem 1.7rem;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  gap: 0.7rem;
+  padding: 0.95rem 1.9rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #f8fafc;
-  background: rgba(7, 20, 39, 0.6);
-  border: 1px solid rgba(212, 175, 55, 0.45);
+  color: #f7f3ea;
+  background: rgba(10, 18, 38, 0.55);
+  border: 1px solid rgba(184, 137, 47, 0.5);
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
   backdrop-filter: blur(8px);
-  transition: all 0.35s ease;
+  transition: all 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
+  will-change: transform;
 }
 
 .luxury-btn-outline:hover {
-  border-color: #d4af37;
-  background: rgba(212, 175, 55, 0.12);
-  color: #fff1b8;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(212, 175, 55, 0.18);
+  border-color: #e8c878;
+  background: rgba(184, 137, 47, 0.14);
+  color: #f0dda6;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 0 22px rgba(184, 137, 47, 0.2);
 }
 
 /* Animations */
@@ -180,28 +259,129 @@
 
 @keyframes slowPan {
   0% { transform: scale(1) translate(0, 0); }
-  50% { transform: scale(1.06) translate(-1%, -1%); }
+  50% { transform: scale(1.07) translate(-1.2%, -1%); }
   100% { transform: scale(1) translate(0, 0); }
 }
 
 .animate-slow-pan {
-  animation: slowPan 22s infinite ease-in-out;
+  animation: slowPan 24s infinite ease-in-out;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 7px;
+/* ============================================================
+   Corner ornaments — thin diagonal gallery-frame marks
+   (replaces the old L-shaped HUD brackets)
+   ============================================================ */
+.corner-bracket {
+  position: absolute;
+  width: 16px;
+  height: 1.5px;
+  pointer-events: none;
+  background: rgba(232, 200, 120, 0.7);
+  transition: all 0.4s ease;
 }
-::-webkit-scrollbar-track {
-  background: #040b16;
+.group:hover .corner-bracket {
+  background: #f0dda6;
+  width: 22px;
+  box-shadow: 0 0 8px rgba(240, 221, 166, 0.6);
 }
-::-webkit-scrollbar-thumb {
-  background: #193863;
-  border-radius: 3px;
-  border: 1px solid rgba(212, 175, 55, 0.2);
+.corner-tl { top: 0; left: 0; transform: rotate(45deg); transform-origin: top left; }
+.corner-tr { top: 0; right: 0; transform: rotate(-45deg); transform-origin: top right; }
+.corner-bl { bottom: 0; left: 0; transform: rotate(-45deg); transform-origin: bottom left; }
+.corner-br { bottom: 0; right: 0; transform: rotate(45deg); transform-origin: bottom right; }
+
+/* Subtle Architectural Grid Lines */
+.arch-grid-bg {
+  background-size: 84px 84px;
+  background-image:
+    linear-gradient(to right, rgba(184, 137, 47, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(184, 137, 47, 0.04) 1px, transparent 1px);
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #d4af37;
+
+/* Cinematic Vignette */
+.cinematic-vignette {
+  background: radial-gradient(circle at center, transparent 42%, rgba(5, 7, 12, 0.34) 85%, rgba(5, 7, 12, 0.62) 100%);
+}
+
+/* ============================================================
+   Marquee ticker — infinite horizontal scroll used in the
+   header utility strip and footer destinations band
+   ============================================================ */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 34s linear infinite;
+}
+
+.marquee-wrap:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ============================================================
+   Custom cursor glow (desktop, fine-pointer only — see App.tsx)
+   ============================================================ */
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(232, 200, 120, 0.75);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+  mix-blend-mode: difference;
+}
+
+.cursor-glow.is-active {
+  width: 52px;
+  height: 52px;
+  border-color: rgba(240, 221, 166, 0.9);
+  background: rgba(184, 137, 47, 0.08);
+}
+
+/* ============================================================
+   Scroll reveal — rise + fade. (A clip-path "curtain wipe" was
+   tried here, but Chromium excludes clip-path-clipped area from
+   IntersectionObserver's own intersection ratio, which meant the
+   observer watching these same elements never reported them as
+   visible — content never got the .aos-animate class and stayed
+   invisible forever. Plain opacity/transform keeps the reveal
+   reliable; the curtain-wipe accent lives on .reveal-mask instead,
+   where it wraps content rather than the observed element itself.)
+   ============================================================ */
+[data-aos='fade-up'] {
+  opacity: 0;
+  transform: translate3d(0, 46px, 0) scale(0.985);
+  transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--aos-delay, 0) * 1ms);
+  will-change: opacity, transform;
+}
+
+[data-aos='fade-up'].aos-animate {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* Optional curtain-wipe wrapper for a heading/media block: put this
+   class on an OUTER wrapper (not the IntersectionObserver target)
+   so the clip animation never interferes with visibility detection. */
+.reveal-mask {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--aos-delay, 0) * 1ms);
+}
+
+[data-aos='fade-up'].aos-animate .reveal-mask,
+.aos-animate.reveal-mask {
+  clip-path: inset(0 0 0 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -210,4 +390,5 @@
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
+  .cursor-glow { display: none; }
 }
